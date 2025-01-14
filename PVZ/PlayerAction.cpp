@@ -1,17 +1,17 @@
-#include "PlantAction.h"
-#include "Plant.h"
+#include "PlayerAction.h"
+#include "Player.h"
 #include "StateMachine.h"
 
 #include "GameManager.h"
-#include "Projectile.h"
+#include "Ball.h"
 #include "PVZScene.h"
 
-void PlantAction_Shooting::OnStart(Plant* pPlant)
+void PlayerAction_Attack::OnStart(Player* pPlant)
 {
 	mShootTimer = pPlant->mShootCadence;
 }
 
-void PlantAction_Shooting::OnUpdate(Plant* pPlant)
+void PlayerAction_Attack::OnUpdate(Player* pPlant)
 {
 	mShootTimer += GameManager::Get()->GetDeltaTime();
 
@@ -23,12 +23,12 @@ void PlantAction_Shooting::OnUpdate(Plant* pPlant)
 	pPlant->Shoot();
 }
 
-void PlantAction_Reloading::OnStart(Plant* pPlant)
+void PlayerAction_Defense::OnStart(Player* pPlant)
 {
 	mReloadTimer = 0.f;
 }
 
-void PlantAction_Reloading::OnUpdate(Plant* pPlant)
+void PlayerAction_Defense::OnUpdate(Player* pPlant)
 {
 	mReloadTimer += GameManager::Get()->GetDeltaTime();
 
@@ -37,5 +37,5 @@ void PlantAction_Reloading::OnUpdate(Plant* pPlant)
 
 	pPlant->Reload();
 
-	pPlant->mpStateMachine->SetState(Plant::Idle);
+	pPlant->mpStateMachine->SetState(Player::Idle);
 }

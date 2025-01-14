@@ -5,15 +5,16 @@
 template<typename T>
 class StateMachine;
 
-class Plant : public Entity
+class Player : public Entity
 {
-	StateMachine<Plant>* mpStateMachine;
+	StateMachine<Player>* mpStateMachine;
 
 	enum State 
 	{
 		Idle,
-		Shooting,
-		Reloading,
+		Defense,
+		Attack,
+		Support,
 
 		Count
 	};
@@ -38,9 +39,9 @@ protected:
 	void OnInitialize() override;
 	void OnUpdate() override;
 
-	friend class PlantAction_Idle;
-	friend class PlantAction_Reloading;
-	friend class PlantAction_Shooting;
+	friend class PlayerAction_Idle;
+	friend class PlayerAction_Defense;
+	friend class PlayerAction_Attack;
 
 	friend class PlantCondition_FullAmmo;
 	friend class PlantCondition_NoAmmo;

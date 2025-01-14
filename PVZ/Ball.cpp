@@ -1,15 +1,15 @@
-#include "Projectile.h"
+#include "Ball.h"
 
 #include "PVZScene.h"
 
-void Projectile::OnInitialize()
+void Ball::OnInitialize()
 {
-	SetTag(PVZScene::Tag::PROJECTILE);
+	SetTag(PVZScene::Tag::BALL);
 
 	SetDirection(1.0f, 0.0f, 100.0f);
 }
 
-void Projectile::OnUpdate()
+void Ball::OnUpdate()
 {
 	sf::Vector2f position = GetPosition(0.f, 0.f);
 
@@ -19,9 +19,9 @@ void Projectile::OnUpdate()
 		Destroy();
 }
 
-void Projectile::OnCollision(Entity* pCollidedWith)
+void Ball::OnCollision(Entity* pCollidedWith)
 {
-	if (pCollidedWith->IsTag(PVZScene::Tag::ZOMBIE))
+	if (pCollidedWith->IsTag(PVZScene::Tag::BALL))
 	{
 		Destroy();
 	}

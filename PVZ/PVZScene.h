@@ -4,7 +4,7 @@
 
 #include <list>
 
-class Plant;
+class Player;
 class Zombie;
 
 namespace sf 
@@ -25,9 +25,11 @@ class PVZScene : public Scene
 public:
 	enum Tag
 	{
-		PLANT,
-		ZOMBIE,
-		PROJECTILE
+		PLAYER_BLUE,
+		PLAYER_RED,
+		BALL,
+
+		COUNT
 	};
 
 	int mLaneZombieCount[3] = {0, 0, 0};		
