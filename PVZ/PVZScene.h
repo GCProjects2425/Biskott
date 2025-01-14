@@ -20,7 +20,7 @@ struct AABB
 	int yMax;
 };
 
-class BiskottScene : public Scene
+class PVZScene : public Scene
 {
 public:
 	enum Tag

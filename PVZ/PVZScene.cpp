@@ -1,4 +1,4 @@
-#include "BiskottScene.h"
+#include "PVZScene.h"
 
 #include "Plant.h"
 #include "Zombie.h"
@@ -6,7 +6,7 @@
 
 #define PLAN_COUNT 3
 
-void BiskottScene::OnInitialize()
+void PVZScene::OnInitialize()
 {
 	int width = GetWindowWidth();
 	int height = GetWindowHeight();
@@ -37,7 +37,7 @@ void BiskottScene::OnInitialize()
 	}
 }
 
-void BiskottScene::OnUpdate()
+void PVZScene::OnUpdate()
 {
 	for (int i = 0; i < PLAN_COUNT; i++)
 	{
@@ -47,7 +47,7 @@ void BiskottScene::OnUpdate()
 	}
 }
 
-int BiskottScene::GetClickedArea(int x, int y) const
+int PVZScene::GetClickedArea(int x, int y) const
 {
 	for (int i = 0; i < PLAN_COUNT; i++)
 	{
@@ -60,7 +60,7 @@ int BiskottScene::GetClickedArea(int x, int y) const
 	return -1;
 }
 
-void BiskottScene::OnEvent(const sf::Event& event)
+void PVZScene::OnEvent(const sf::Event& event)
 {
 	if (event.type != sf::Event::EventType::MouseButtonPressed)
 		return;
@@ -81,14 +81,14 @@ void BiskottScene::OnEvent(const sf::Event& event)
 	mLaneZombieCount[index]++;
 }
 
-bool BiskottScene::IsZombieInArea(int index) const
+bool PVZScene::IsZombieInArea(int index) const
 {
 	_ASSERT(index >= 0 && index < PLAN_COUNT);
 
 	return mLaneZombieCount[index] > 0;
 }
 
-void BiskottScene::OnDestroyZombie(int lane)
+void PVZScene::OnDestroyZombie(int lane)
 {
 	_ASSERT(lane >= 0 && lane < PLAN_COUNT);
 	if(mLaneZombieCount[lane] <= 0)

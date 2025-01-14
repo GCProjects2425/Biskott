@@ -2,7 +2,7 @@
 
 #include <string>
 
-#include "BiskottScene.h"
+#include "PVZScene.h"
 #include "Projectile.h"
 
 #include "StateMachine.h"
@@ -18,7 +18,7 @@ void Plant::OnInitialize()
 	mAreaIndex = -1;
 	mAmmo = mMaxAmmo;
 
-	SetTag(BiskottScene::Tag::PLANT);
+	SetTag(PVZScene::Tag::PLANT);
 
 	//IDLE
 	{

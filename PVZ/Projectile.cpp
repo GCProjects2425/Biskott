@@ -1,10 +1,10 @@
 #include "Projectile.h"
 
-#include "BiskottScene.h"
+#include "PVZScene.h"
 
 void Projectile::OnInitialize()
 {
-	SetTag(BiskottScene::Tag::PROJECTILE);
+	SetTag(PVZScene::Tag::PROJECTILE);
 
 	SetDirection(1.0f, 0.0f, 100.0f);
 }
@@ -21,7 +21,7 @@ void Projectile::OnUpdate()
 
 void Projectile::OnCollision(Entity* pCollidedWith)
 {
-	if (pCollidedWith->IsTag(BiskottScene::Tag::ZOMBIE))
+	if (pCollidedWith->IsTag(PVZScene::Tag::ZOMBIE))
 	{
 		Destroy();
 	}
