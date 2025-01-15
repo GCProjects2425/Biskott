@@ -24,15 +24,36 @@ void RugbyScene::OnEvent(const sf::Event& event)
 {
     if (event.type == sf::Event::MouseButtonPressed)
     {
-        // Test pour sélectionner un joueur ou passer la balle
-        for (Player* player : mTeam1)
+        if (event.mouseButton.button == sf::Mouse::Right)
         {
-            if (player->IsInside(event.mouseButton.x, event.mouseButton.y))
+            // Sélectionner un joueur
+            mSelectedPlayer = nullptr; // Réinitialiser avant la nouvelle sélection
+            for (Player* player : mTeam1)
             {
-                player->SetHasBall(true);
-                mBall->SetPosition(player->GetPosition().x, player->GetPosition().y);
-                mBall->SetTag(BALL);
+                if (player->IsInside(event.mouseButton.x, event.mouseButton.y))
+                {
+                    mSelectedPlayer = player;
+                    break;
+                }
             }
+
+            if (!mSelectedPlayer) // Si aucun joueur de l'équipe 1, chercher dans l'équipe 2
+            {
+                for (Player* player : mTeam2)
+                {
+                    if (player->IsInside(event.mouseButton.x, event.mouseButton.y))
+                    {
+                        mSelectedPlayer = player;
+                        break;
+                    }
+                }
+            }
+        }
+        else if (event.mouseButton.button == sf::Mouse::Left && mSelectedPlayer)
+        {
+            // Déplacer le joueur sélectionné
+            mSelectedPlayer->SetPosition(event.mouseButton.x, event.mouseButton.y);
+            mSelectedPlayer = nullptr; // Désélectionner après déplacement
         }
     }
 }
@@ -55,6 +76,13 @@ void RugbyScene::OnUpdate()
     if (mBall)
     {
         mBall->Update();
+    }
+
+    // Indicateur visuel pour le joueur sélectionné
+    if (mSelectedPlayer)
+    {
+        sf::Vector2f position = mSelectedPlayer->GetPosition();
+        Debug::DrawCircle(position.x, position.y, 25, sf::Color::Yellow); // Cercle jaune autour du joueur sélectionné
     }
 }
 
