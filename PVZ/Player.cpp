@@ -33,13 +33,13 @@ bool Player::CheckAreaOutOfBounds()
 		const sf::Vector2f& position = GetPosition();
 		sf::Vector2f newPosition = position;
 		if ((position.x - GetRadius()) <= mArea->xMin)
-			newPosition = sf::Vector2f(mArea->xMin + GetRadius(), position.y);
+			newPosition = sf::Vector2f(mArea->xMin + GetRadius(), newPosition.y);
 		if ((position.x + GetRadius()) >= mArea->xMax)
-			newPosition = sf::Vector2f(mArea->xMax - GetRadius(), position.y);
+			newPosition = sf::Vector2f(mArea->xMax - GetRadius(), newPosition.y);
 		if ((position.y - GetRadius()) <= mArea->yMin)
-			newPosition = sf::Vector2f(position.x, mArea->yMin + GetRadius());
+			newPosition = sf::Vector2f(newPosition.x, mArea->yMin + GetRadius());
 		if ((position.y + GetRadius()) >= (mArea->xMin + mArea->yMax))
-			newPosition = sf::Vector2f(position.x, (mArea->xMin + mArea->yMax) - GetRadius());
+			newPosition = sf::Vector2f(newPosition.x, (mArea->xMin + mArea->yMax) - GetRadius());
 
 		SetPosition(newPosition.x, newPosition.y);
 
