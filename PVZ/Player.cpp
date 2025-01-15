@@ -1,6 +1,7 @@
 #include "Player.h"
 #include "Debug.h"
 #include "Entity.h"
+#include "RugbyScene.h"
 
 void Player::MoveToPosition(float x, float y)
 {
@@ -9,14 +10,21 @@ void Player::MoveToPosition(float x, float y)
 
 void Player::OnUpdate()
 {
-    // Si le joueur a la balle, dessine un indicateur visuel
-    //SetDirection(1.f, 0.f, 20.f);
     if (HasBall())
     {
-        const sf::Vector2f& position = GetPosition();
-        Debug::DrawCircle(position.x, position.y, 10, sf::Color::Yellow); // Indicateur de balle
-    }
+        RugbyScene* pScene = GetScene<RugbyScene>();
 
-    // Appeler la mise à jour générale de l'entité
-    //Entity::Update();
+		std::vector<Player*> teamPlayers;
+        pScene->GetTeamPlayers(teamPlayers, mTag);
+
+		for (Player* player : teamPlayers)
+		{
+			if (player != this)
+			{
+				Debug::DrawLine(GetPosition().x, GetPosition().y, player->GetPosition().x, player->GetPosition().y, sf::Color::White);
+			}
+		}
+        /*const sf::Vector2f& position = GetPosition();
+        Debug::DrawCircle(position.x, position.y, 10, sf::Color::Yellow); // Indicateur de balle*/
+    }
 }

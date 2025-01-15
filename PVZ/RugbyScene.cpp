@@ -55,6 +55,33 @@ void RugbyScene::OnEvent(const sf::Event& event)
         }
     }
 
+	if (event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Right)
+	{
+		if (mBall->GetOwner() && mBall->GetOwner()->IsTag(PLAYER_TEAM1))
+		{
+            for (Player* player : mTeam1)
+            {
+                if (player->IsInside(event.mouseButton.x, event.mouseButton.y))
+                {
+                    mBall->SetOwner(player);
+					mBall->SetIsMoving(true);
+                    return;
+                }
+            }
+		}
+        else
+        {
+            for (Player* player : mTeam2)
+            {
+                if (player->IsInside(event.mouseButton.x, event.mouseButton.y))
+                {
+                    mBall->SetOwner(player);
+                    return;
+                }
+            }
+        }
+	}
+
     if(event.type == sf::Event::MouseMoved)
     {
 		if (mSelectedPlayer)
@@ -67,6 +94,18 @@ void RugbyScene::OnEvent(const sf::Event& event)
 
 void RugbyScene::OnUpdate()
 {
+}
+
+void RugbyScene::GetTeamPlayers(std::vector<Player*>& team, int teamIndex) const
+{
+	if (teamIndex == static_cast<int>(PLAYER_TEAM1))
+	{
+		team = mTeam1;
+	}
+	else if (teamIndex == static_cast<int>(PLAYER_TEAM2))
+	{
+		team = mTeam2;
+	}
 }
 
 void RugbyScene::InitializeTeams()
