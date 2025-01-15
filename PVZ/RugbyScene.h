@@ -31,6 +31,7 @@ public:
     void OnEvent(const sf::Event& event) override;
     void OnUpdate() override;
 
+	void GetTeamPlayers(std::vector<Player*>& team, int teamIndex) const;
 private:
     void InitializeTeams(); 
     void ResetPositions(); 
