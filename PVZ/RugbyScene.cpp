@@ -31,7 +31,6 @@ void RugbyScene::OnEvent(const sf::Event& event)
             if (player->IsInside(event.mouseButton.x, event.mouseButton.y))
             {
                 mSelectedPlayer = player;
-                player->SetPosition(event.mouseButton.x, event.mouseButton.y);
                 return;
             }
         }
@@ -45,7 +44,7 @@ void RugbyScene::OnEvent(const sf::Event& event)
             }
         }
     }
-    else if (event.type == sf::Event::MouseButtonReleased && event.mouseButton.button == sf::Mouse::Left)
+    if (event.type == sf::Event::MouseButtonReleased && event.mouseButton.button == sf::Mouse::Left)
     {
         // Relâcher le joueur déplacé
         if (mSelectedPlayer)
@@ -53,37 +52,20 @@ void RugbyScene::OnEvent(const sf::Event& event)
             mSelectedPlayer = nullptr;
         }
     }
+
+    if(event.type == sf::Event::MouseMoved)
+    {
+		if (mSelectedPlayer)
+		{
+			mSelectedPlayer->SetPosition(static_cast<float>(event.mouseMove.x), static_cast<float>(event.mouseMove.y));
+		}
+    }
 }
 
 
 void RugbyScene::OnUpdate()
 {
-    // Mettre à jour les joueurs de l'équipe 1
-    for (Player* player : mTeam1)
-    {
-        player->Update();
-    }
 
-    // Mettre à jour les joueurs de l'équipe 2
-    for (Player* player : mTeam2)
-    {
-        player->Update();
-    }
-
-    // Mettre à jour la balle
-    if (mBall)
-    {
-        mBall->Update();
-    }
-
-    // Déplacer le joueur sélectionné avec la souris
-    if (mSelectedPlayer)
-    {
-        // Obtenir la position globale de la souris
-        sf::Vector2i mousePosition = sf::Mouse::getPosition(); // Utilisation brute des coordonnées globales
-        Debug::DrawCircle(mousePosition.x, mousePosition.y, 10, sf::Color::Red); // Indicateur visuel pour la position
-        mSelectedPlayer->SetPosition(static_cast<float>(mousePosition.x), static_cast<float>(mousePosition.y));
-    }
 }
 
 void RugbyScene::InitializeTeams()
