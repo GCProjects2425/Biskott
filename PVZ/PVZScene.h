@@ -1,6 +1,7 @@
 #pragma once
 
 #include "GameManager.h"
+#include "AABB.h"
 
 #include <list>
 
@@ -11,14 +12,6 @@ namespace sf
 {
 	class Event;
 }
-
-struct AABB 
-{
-	int xMin;
-	int yMin;
-	int xMax;
-	int yMax;
-};
 
 class PVZScene : public Scene
 {

@@ -135,6 +135,9 @@
     <ClInclude Include="Ball.h">
       <Filter>Rugby</Filter>
     </ClInclude>
+    <ClInclude Include="AABB.h">
+      <Filter>Rugby</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Scene.inl">
@@ -155,5 +158,6 @@
     <None Include="StateMachine.inl">
       <Filter>Engine\StateMachine</Filter>
     </None>
+    <None Include="packages.config" />
   </ItemGroup>
 </Project>
