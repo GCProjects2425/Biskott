@@ -1,7 +1,6 @@
 #include "Player.h"
 #include "Debug.h"
 #include "Entity.h"
-#include "RugbyScene.h"
 #include "Utils.h"
 
 bool Player::OpponentIsNear()
@@ -27,6 +26,31 @@ bool Player::OpponentIsNear(Player* player)
 	return isOpponentNear;
 }
 
+bool Player::CheckAreaOutOfBounds()
+{
+	if(mArea)
+	{
+		const sf::Vector2f& position = GetPosition();
+		sf::Vector2f newPosition = position;
+		if ((position.x - GetRadius()) <= mArea->xMin)
+			newPosition = sf::Vector2f(mArea->xMin + GetRadius(), position.y);
+		if ((position.x + GetRadius()) >= mArea->xMax)
+			newPosition = sf::Vector2f(mArea->xMax - GetRadius(), position.y);
+		if ((position.y - GetRadius()) <= mArea->yMin)
+			newPosition = sf::Vector2f(position.x, mArea->yMin + GetRadius());
+		if ((position.y + GetRadius()) >= (mArea->xMin + mArea->yMax))
+			newPosition = sf::Vector2f(position.x, (mArea->xMin + mArea->yMax) - GetRadius());
+
+		SetPosition(newPosition.x, newPosition.y);
+
+		/*if (position.x < mArea->xMin || position.x > mArea->xMax || position.y < mArea->yMin || position.y > mArea->yMax)
+		{
+			return true;
+		}*/
+	}
+	return false;
+}
+
 void Player::MoveToPosition(float x, float y)
 {
     GoToPosition(x, y, speed); // Utilise la méthode de déplacement de l'entité
@@ -34,6 +58,8 @@ void Player::MoveToPosition(float x, float y)
 
 void Player::OnUpdate()
 {
+	CheckAreaOutOfBounds();
+	const sf::Vector2f lastPosition = GetPosition();
     if (HasBall())
     {
         RugbyScene* pScene = GetScene<RugbyScene>();

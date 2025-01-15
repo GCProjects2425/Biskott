@@ -15,7 +15,7 @@ void RugbyScene::OnInitialize()
 
     // Définition des zones
     mAreas[0] = { 1, 0, width - 1, halfHeight };              
-    mAreas[1] = { 1, halfHeight, width - 1 , halfHeight -1 };         
+    mAreas[1] = { 1, halfHeight, width - 1 , halfHeight - 1 };         
     mAreas[2] = { 1, halfHeight / 2, width - 1 , halfHeight };
 
     // Initialiser les équipes
@@ -138,6 +138,14 @@ void RugbyScene::InitializeTeams()
         player->SetPosition(width * 0.1f, (i + 1) * height / 6); // Positions espac�es verticalement
 		player->SetTag(PLAYER_TEAM1);
         player->SetRigidBody(true);
+
+        if (i <= 1)
+            player->SetArea(&mAreas[0]);
+        else if (i >= 3)
+            player->SetArea(&mAreas[1]);
+        else
+            player->SetArea(&mAreas[2]);
+
         mTeam1.push_back(player);
     }
 
@@ -147,6 +155,14 @@ void RugbyScene::InitializeTeams()
         player->SetPosition(width * 0.9f, (i + 1) * height / 6);
         player->SetTag(PLAYER_TEAM2);
         player->SetRigidBody(true);
+
+        if (i <= 1)
+            player->SetArea(&mAreas[0]);
+        else if (i > 2)
+            player->SetArea(&mAreas[1]);
+        else
+            player->SetArea(&mAreas[2]);
+
         mTeam2.push_back(player);
     }
 }
