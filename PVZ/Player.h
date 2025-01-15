@@ -12,5 +12,5 @@ public:
     bool HasBall() const { return hasBall; }
 
     void MoveToPosition(float x, float y); // Se déplacer vers une position
-    void Update(); // Comportement du joueur
+    void OnUpdate(); // Comportement du joueur
 };

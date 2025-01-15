@@ -18,11 +18,13 @@ void RugbyScene::OnInitialize()
     // Créer la balle
     mBall = CreateEntity<Ball>(10.0f, sf::Color::Magenta);
     mBall->SetPosition(width / 2, height / 2);
+	mBall->SetTag(BALL);
+    mBall->SetOwner(mTeam1[1]);
 }
 
 void RugbyScene::OnEvent(const sf::Event& event)
 {
-    if (event.type == sf::Event::MouseButtonPressed)
+    /*if (event.type == sf::Event::MouseButtonPressed)
     {
         // Test pour sélectionner un joueur ou passer la balle
         for (Player* player : mTeam1)
@@ -34,28 +36,11 @@ void RugbyScene::OnEvent(const sf::Event& event)
                 mBall->SetTag(BALL);
             }
         }
-    }
+    }*/
 }
 
 void RugbyScene::OnUpdate()
 {
-    // Mettre à jour les joueurs de l'équipe 1
-    for (Player* player : mTeam1)
-    {
-        player->Update();
-    }
-
-    // Mettre à jour les joueurs de l'équipe 2
-    for (Player* player : mTeam2)
-    {
-        player->Update();
-    }
-
-    // Mettre à jour la balle
-    if (mBall)
-    {
-        mBall->Update();
-    }
 }
 
 void RugbyScene::InitializeTeams()
