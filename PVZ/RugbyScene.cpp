@@ -14,12 +14,9 @@ void RugbyScene::OnInitialize()
     int halfHeight = height / 2;
 
     // Définition des zones
-    mAreas[0] = { 0, 0, width, halfHeight };              
-    mAreas[1] = { 0, halfHeight, width, height };         
-    mAreas[2] = { 0, halfHeight / 2, width, halfHeight + halfHeight / 2 };
-
-    // Dessiner le terrain
-    DrawField();
+    mAreas[0] = { 1, 0, width - 1, halfHeight };              
+    mAreas[1] = { 1, halfHeight, width - 1 , halfHeight -1 };         
+    mAreas[2] = { 1, halfHeight / 2, width - 1 , halfHeight };
 
     // Initialiser les équipes
     InitializeTeams();
@@ -101,6 +98,9 @@ void RugbyScene::OnEvent(const sf::Event& event)
 
 void RugbyScene::OnUpdate()
 {
+    // Dessiner le terrain
+    DrawField();
+
     // Dessiner les zones 
     for (int i = 0; i < LANE_COUNT; i++)
     {
@@ -110,7 +110,7 @@ void RugbyScene::OnUpdate()
         else if (i == 1) color = sf::Color::Blue; // Bleu pour la deuxième zone
         else if (i == 2) color = sf::Color::Yellow; // Jaune pour la troisième zone
 
-        Debug::DrawRectangle(aabb.xMin, aabb.yMin, aabb.xMax - aabb.xMin, aabb.yMax - aabb.yMin, color);
+        Debug::DrawRectangle(aabb.xMin, aabb.yMin, aabb.xMax, aabb.yMax, color);
     }
 }
 
@@ -137,6 +137,7 @@ void RugbyScene::InitializeTeams()
         Player* player = CreateEntity<Player>(playerRadius, sf::Color::Green);
         player->SetPosition(width * 0.1f, (i + 1) * height / 6); // Positions espac�es verticalement
 		player->SetTag(PLAYER_TEAM1);
+        player->SetRigidBody(true);
         mTeam1.push_back(player);
     }
 
@@ -145,6 +146,7 @@ void RugbyScene::InitializeTeams()
         Player* player = CreateEntity<Player>(playerRadius, sf::Color::Red);
         player->SetPosition(width * 0.9f, (i + 1) * height / 6);
         player->SetTag(PLAYER_TEAM2);
+        player->SetRigidBody(true);
         mTeam2.push_back(player);
     }
 }
