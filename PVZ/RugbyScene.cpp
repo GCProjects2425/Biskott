@@ -2,20 +2,21 @@
 #include "Player.h"
 #include "Ball.h"
 #include "Debug.h"
+#include "GameManager.h"
 
 void RugbyScene::OnInitialize()
 {
-    // Taille de la fenêtre
+    // Taille de la fenï¿½tre
     int width = GetWindowWidth();
     int height = GetWindowHeight();
 
     // Dessiner le terrain
     DrawField();
 
-    // Initialiser les équipes
+    // Initialiser les ï¿½quipes
     InitializeTeams();
 
-    // Créer la balle
+    // Crï¿½er la balle
     mBall = CreateEntity<Ball>(10.0f, sf::Color::Magenta);
     mBall->SetPosition(width / 2, height / 2);
 	mBall->SetTag(BALL);
@@ -24,20 +25,45 @@ void RugbyScene::OnInitialize()
 
 void RugbyScene::OnEvent(const sf::Event& event)
 {
-    /*if (event.type == sf::Event::MouseButtonPressed)
+    if (event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left)
     {
-        // Test pour sélectionner un joueur ou passer la balle
+        mSelectedPlayer = nullptr; 
         for (Player* player : mTeam1)
         {
             if (player->IsInside(event.mouseButton.x, event.mouseButton.y))
             {
-                player->SetHasBall(true);
-                mBall->SetPosition(player->GetPosition().x, player->GetPosition().y);
-                mBall->SetTag(BALL);
+                mSelectedPlayer = player;
+                return;
             }
         }
-    }*/
+
+        for (Player* player : mTeam2)
+        {
+            if (player->IsInside(event.mouseButton.x, event.mouseButton.y))
+            {
+                mSelectedPlayer = player;
+                return;
+            }
+        }
+    }
+    if (event.type == sf::Event::MouseButtonReleased && event.mouseButton.button == sf::Mouse::Left)
+    {
+        // Relï¿½cher le joueur dï¿½placï¿½
+        if (mSelectedPlayer)
+        {
+            mSelectedPlayer = nullptr;
+        }
+    }
+
+    if(event.type == sf::Event::MouseMoved)
+    {
+		if (mSelectedPlayer)
+		{
+			mSelectedPlayer->SetPosition(static_cast<float>(event.mouseMove.x), static_cast<float>(event.mouseMove.y));
+		}
+    }
 }
+
 
 void RugbyScene::OnUpdate()
 {
@@ -49,16 +75,16 @@ void RugbyScene::InitializeTeams()
     int height = GetWindowHeight();
     float playerRadius = 20.0f;
 
-    // Créer les joueurs de l'équipe 1
+    // Crï¿½er les joueurs de l'ï¿½quipe 1
     for (int i = 0; i < 5; ++i)
     {
         Player* player = CreateEntity<Player>(playerRadius, sf::Color::Green);
-        player->SetPosition(width * 0.1f, (i + 1) * height / 6); // Positions espacées verticalement
+        player->SetPosition(width * 0.1f, (i + 1) * height / 6); // Positions espacï¿½es verticalement
 		player->SetTag(PLAYER_TEAM1);
         mTeam1.push_back(player);
     }
 
-    // Créer les joueurs de l'équipe 2
+    // Crï¿½er les joueurs de l'ï¿½quipe 2
     for (int i = 0; i < 5; ++i)
     {
         Player* player = CreateEntity<Player>(playerRadius, sf::Color::Red);
@@ -70,7 +96,7 @@ void RugbyScene::InitializeTeams()
 
 void RugbyScene::ResetPositions()
 {
-    // Réinitialiser les positions des joueurs et de la balle après un essai
+    // Rï¿½initialiser les positions des joueurs et de la balle aprï¿½s un essai
     int width = GetWindowWidth();
     int height = GetWindowHeight();
 
@@ -99,7 +125,7 @@ void RugbyScene::UpdateScore(int team)
         mScoreTeam2++;
     }
 
-    // Réinitialiser les positions après la mise à jour du score
+    // Rï¿½initialiser les positions aprï¿½s la mise ï¿½ jour du score
     ResetPositions();
 }
 
@@ -111,7 +137,7 @@ void RugbyScene::DrawField()
     // Fond bleu
     Debug::DrawRectangle(0, 0, width, height, sf::Color::Blue);
 
-    // Lignes blanches délimitant les zones
-    Debug::DrawLine(width * 0.1f, 0, width * 0.1f, height, sf::Color::White); // Ligne côté gauche
-    Debug::DrawLine(width * 0.9f, 0, width * 0.9f, height, sf::Color::White); // Ligne côté droit
+    // Lignes blanches dï¿½limitant les zones
+    Debug::DrawLine(width * 0.1f, 0, width * 0.1f, height, sf::Color::White); // Ligne cï¿½tï¿½ gauche
+    Debug::DrawLine(width * 0.9f, 0, width * 0.9f, height, sf::Color::White); // Ligne cï¿½tï¿½ droit
 }

@@ -8,11 +8,11 @@ class Ball;
 class RugbyScene : public Scene
 {
 private:
-    std::vector<Player*> mTeam1; // Joueurs de l'équipe 1
-    std::vector<Player*> mTeam2; // Joueurs de l'équipe 2
-    Ball* mBall; // Instance de la balle
-    int mScoreTeam1 = 0; // Score de l'équipe 1
-    int mScoreTeam2 = 0; // Score de l'équipe 2
+    std::vector<Player*> mTeam1;
+    std::vector<Player*> mTeam2;
+    Ball* mBall;
+    int mScoreTeam1 = 0; 
+    int mScoreTeam2 = 0; 
 
 public:
     enum Tag
@@ -27,8 +27,9 @@ public:
     void OnUpdate() override;
 
 private:
-    void InitializeTeams(); // Initialiser les joueurs
-    void ResetPositions();  // Réinitialiser les positions après un essai
-    void UpdateScore(int team); // Mettre à jour le score
-    void DrawField(); // Dessiner le terrain
+    void InitializeTeams(); 
+    void ResetPositions(); 
+    void UpdateScore(int team);
+    void DrawField();
+    Player* mSelectedPlayer = nullptr;
 };
