@@ -10,20 +10,24 @@ void RugbyScene::OnInitialize()
 {
     int width = GetWindowWidth();
     int height = GetWindowHeight();
-    int zoneHeight = height / LANE_COUNT;
 
-    mAreas[0] = { 0, 0, width, zoneHeight };                    
-    mAreas[1] = { 0, zoneHeight, width, zoneHeight * 2 };        
-    mAreas[2] = { 0, zoneHeight * 2, width, height };
+    int halfHeight = height / 2;
 
+    // Définition des zones
+    mAreas[0] = { 0, 0, width, halfHeight };              
+    mAreas[1] = { 0, halfHeight, width, height };         
+    mAreas[2] = { 0, halfHeight / 2, width, halfHeight + halfHeight / 2 };
 
+    // Dessiner le terrain
     DrawField();
 
+    // Initialiser les équipes
     InitializeTeams();
 
+    // Créer la balle
     mBall = CreateEntity<Ball>(10.0f, sf::Color::Magenta);
     mBall->SetPosition(width / 2, height / 2);
-	mBall->SetTag(BALL);
+    mBall->SetTag(BALL);
     mBall->SetOwner(mTeam1[1]);
 }
 
@@ -74,7 +78,12 @@ void RugbyScene::OnUpdate()
     for (int i = 0; i < LANE_COUNT; i++)
     {
         const AABB& aabb = mAreas[i];
-        Debug::DrawRectangle(aabb.xMin, aabb.yMin, aabb.xMax - aabb.xMin, aabb.yMax - aabb.yMin, sf::Color::Yellow);
+        sf::Color color;
+        if (i == 0) color = sf::Color::Red;     // Rouge pour la première zone
+        else if (i == 1) color = sf::Color::Blue; // Bleu pour la deuxième zone
+        else if (i == 2) color = sf::Color::Yellow; // Jaune pour la troisième zone
+
+        Debug::DrawRectangle(aabb.xMin, aabb.yMin, aabb.xMax - aabb.xMin, aabb.yMax - aabb.yMin, color);
     }
 }
 
@@ -145,8 +154,8 @@ void RugbyScene::DrawField()
     Debug::DrawRectangle(0, 0, width, height, sf::Color::Blue);
 
     // Lignes blanches d�limitant les zones
-    Debug::DrawLine(width * 0.1f, 0, width * 0.1f, height, sf::Color::White); // Ligne c�t� gauche
-    Debug::DrawLine(width * 0.9f, 0, width * 0.9f, height, sf::Color::White); // Ligne c�t� droit
+    Debug::DrawLine(width * 0.1f, 0, width * 0.1f, height, sf::Color::White);
+    Debug::DrawLine(width * 0.9f, 0, width * 0.9f, height, sf::Color::White);
 }
 
 int RugbyScene::GetPlayerLane(const sf::Vector2f& position) const
