@@ -1,6 +1,7 @@
 #pragma once
 #include "Scene.h"
 #include <vector>
+#include "AABB.h"
 
 class Player;
 class Ball;
@@ -13,6 +14,10 @@ private:
     Ball* mBall;
     int mScoreTeam1 = 0; 
     int mScoreTeam2 = 0; 
+
+    AABB mAreas[3];
+
+    Player* mSelectedPlayer = nullptr;
 
 public:
     enum Tag
@@ -31,5 +36,6 @@ private:
     void ResetPositions(); 
     void UpdateScore(int team);
     void DrawField();
-    Player* mSelectedPlayer = nullptr;
+    
+    int GetPlayerLane(const sf::Vector2f& position) const; // Retourne la zone d'un joueur
 };

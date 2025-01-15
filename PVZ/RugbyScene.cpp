@@ -4,19 +4,23 @@
 #include "Debug.h"
 #include "GameManager.h"
 
+#define LANE_COUNT 3
+
 void RugbyScene::OnInitialize()
 {
-    // Taille de la fen�tre
     int width = GetWindowWidth();
     int height = GetWindowHeight();
+    int zoneHeight = height / LANE_COUNT;
 
-    // Dessiner le terrain
+    mAreas[0] = { 0, 0, width, zoneHeight };                    
+    mAreas[1] = { 0, zoneHeight, width, zoneHeight * 2 };        
+    mAreas[2] = { 0, zoneHeight * 2, width, height };
+
+
     DrawField();
 
-    // Initialiser les �quipes
     InitializeTeams();
 
-    // Cr�er la balle
     mBall = CreateEntity<Ball>(10.0f, sf::Color::Magenta);
     mBall->SetPosition(width / 2, height / 2);
 	mBall->SetTag(BALL);
@@ -48,7 +52,6 @@ void RugbyScene::OnEvent(const sf::Event& event)
     }
     if (event.type == sf::Event::MouseButtonReleased && event.mouseButton.button == sf::Mouse::Left)
     {
-        // Rel�cher le joueur d�plac�
         if (mSelectedPlayer)
         {
             mSelectedPlayer = nullptr;
@@ -67,6 +70,12 @@ void RugbyScene::OnEvent(const sf::Event& event)
 
 void RugbyScene::OnUpdate()
 {
+    // Dessiner les zones 
+    for (int i = 0; i < LANE_COUNT; i++)
+    {
+        const AABB& aabb = mAreas[i];
+        Debug::DrawRectangle(aabb.xMin, aabb.yMin, aabb.xMax - aabb.xMin, aabb.yMax - aabb.yMin, sf::Color::Yellow);
+    }
 }
 
 void RugbyScene::InitializeTeams()
@@ -75,7 +84,6 @@ void RugbyScene::InitializeTeams()
     int height = GetWindowHeight();
     float playerRadius = 20.0f;
 
-    // Cr�er les joueurs de l'�quipe 1
     for (int i = 0; i < 5; ++i)
     {
         Player* player = CreateEntity<Player>(playerRadius, sf::Color::Green);
@@ -84,7 +92,6 @@ void RugbyScene::InitializeTeams()
         mTeam1.push_back(player);
     }
 
-    // Cr�er les joueurs de l'�quipe 2
     for (int i = 0; i < 5; ++i)
     {
         Player* player = CreateEntity<Player>(playerRadius, sf::Color::Red);
@@ -140,4 +147,18 @@ void RugbyScene::DrawField()
     // Lignes blanches d�limitant les zones
     Debug::DrawLine(width * 0.1f, 0, width * 0.1f, height, sf::Color::White); // Ligne c�t� gauche
     Debug::DrawLine(width * 0.9f, 0, width * 0.9f, height, sf::Color::White); // Ligne c�t� droit
+}
+
+int RugbyScene::GetPlayerLane(const sf::Vector2f& position) const
+{
+    for (int i = 0; i < LANE_COUNT; i++)
+    {
+        const AABB& aabb = mAreas[i];
+        if (position.x >= aabb.xMin && position.x <= aabb.xMax &&
+            position.y >= aabb.yMin && position.y <= aabb.yMax)
+        {
+            return i; // Retourne l'index de la zone
+        }
+    }
+    return -1;
 }
