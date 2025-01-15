@@ -10,12 +10,6 @@ void RugbyScene::OnInitialize()
 {
     int width = GetWindowWidth();
     int height = GetWindowHeight();
-    int zoneHeight = height / LANE_COUNT;
-
-    mAreas[0] = { 0, 0, width, zoneHeight };                    
-    mAreas[1] = { 0, zoneHeight, width, zoneHeight * 2 };        
-    mAreas[2] = { 0, zoneHeight * 2, width, height };
-
 
     int halfHeight = height / 2;
 
