@@ -31,6 +31,7 @@ void RugbyScene::OnEvent(const sf::Event& event)
             {
                 player->SetHasBall(true);
                 mBall->SetPosition(player->GetPosition().x, player->GetPosition().y);
+                mBall->SetTag(BALL);
             }
         }
     }
@@ -68,6 +69,7 @@ void RugbyScene::InitializeTeams()
     {
         Player* player = CreateEntity<Player>(playerRadius, sf::Color::Green);
         player->SetPosition(width * 0.1f, (i + 1) * height / 6); // Positions espacées verticalement
+		player->SetTag(PLAYER_TEAM1);
         mTeam1.push_back(player);
     }
 
@@ -76,6 +78,7 @@ void RugbyScene::InitializeTeams()
     {
         Player* player = CreateEntity<Player>(playerRadius, sf::Color::Red);
         player->SetPosition(width * 0.9f, (i + 1) * height / 6);
+        player->SetTag(PLAYER_TEAM2);
         mTeam2.push_back(player);
     }
 }

@@ -15,6 +15,13 @@ private:
     int mScoreTeam2 = 0; // Score de l'équipe 2
 
 public:
+    enum Tag
+    {
+        PLAYER_TEAM1,
+        PLAYER_TEAM2,
+        BALL
+    };
+
     void OnInitialize() override;
     void OnEvent(const sf::Event& event) override;
     void OnUpdate() override;
