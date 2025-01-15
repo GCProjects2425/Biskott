@@ -11,6 +11,9 @@ public:
     void SetHasBall(bool value) { hasBall = value; }
     bool HasBall() const { return hasBall; }
 
+    bool OpponentIsNear();
+    bool OpponentIsNear(Player* player);
+
     void MoveToPosition(float x, float y); // Se déplacer vers une position
     void OnUpdate(); // Comportement du joueur
 };
