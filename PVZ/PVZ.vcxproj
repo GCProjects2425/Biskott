@@ -37,6 +37,8 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="Player.cpp" />
+    <ClCompile Include="PlayerAction.cpp" />
+    <ClCompile Include="PlayerCondition.cpp" />
     <ClCompile Include="Projectile.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
     </ClCompile>
@@ -70,6 +72,8 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
     </ClInclude>
     <ClInclude Include="Player.h" />
+    <ClInclude Include="PlayerAction.h" />
+    <ClInclude Include="PlayerCondition.h" />
     <ClInclude Include="Projectile.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
     </ClInclude>
