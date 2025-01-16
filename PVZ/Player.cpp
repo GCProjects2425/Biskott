@@ -18,7 +18,7 @@ bool Player::OpponentIsNear(Player* player)
 	for (Player* oppsPlayer : oppsTeamPlayers)
 	{
 		float distance = Utils::GetDistance(oppsPlayer->GetPosition().x, oppsPlayer->GetPosition().y, player->GetPosition().x, player->GetPosition().y);
-		if (distance <= 50.f)
+		if (distance <= 100.f)
 		{
 			isOpponentNear = true;
 			break;
@@ -86,8 +86,8 @@ void Player::OnUpdate()
 
 			}
 		}
-        /*const sf::Vector2f& position = GetPosition();
-        Debug::DrawCircle(position.x, position.y, 10, sf::Color::Yellow); // Indicateur de balle*/
+        const sf::Vector2f& position = GetPosition();
+        Debug::DrawCircle(position.x, position.y, 10, sf::Color::Yellow); // Indicateur de balle
     }
 }
 
@@ -95,15 +95,16 @@ void Player::OnUpdate()
 void Player::OnCollision(Entity* pCollidedWith)
 {
 
-	if (pCollidedWith->IsTag(RugbyScene::Tag::PLAYER_TEAM1) || pCollidedWith->IsTag(RugbyScene::Tag::PLAYER_TEAM2))
+	if (!pCollidedWith->IsTag(mTag) && !pCollidedWith->IsTag(RugbyScene::Tag::BALL))
 	{
-
-		Player* player = dynamic_cast<Player*>(pCollidedWith);
-		if (player)
+		if (Player* player = dynamic_cast<Player*>(pCollidedWith))
 		{
-			if (player->HasBall())
+			RugbyScene* pScene = GetScene<RugbyScene>();
+			if (player->HasBall() && !pScene->GetBall()->GetIsAlreadySwitched())
 			{
-
+				Debug::DrawText(10, 10, std::to_string(GetDeltaTime()), sf::Color::Green);
+				pScene->GetBall()->SetOwner(this);
+				//Debug::DrawCircle(GetPosition().x, GetPosition().y, 50.f, sf::Color::Yellow);
 			}
 
 		}

@@ -30,7 +30,7 @@ void RugbyScene::OnInitialize()
     mBall = CreateEntity<Ball>(10.0f, sf::Color::Magenta);
     mBall->SetPosition(width / 2, height / 2);
     mBall->SetTag(BALL);
-    mBall->SetOwner(mTeam1[1]);
+    mBall->SetOwner(mTeam2[1]);
 }
 
 void RugbyScene::OnEvent(const sf::Event& event)
@@ -78,13 +78,14 @@ void RugbyScene::OnEvent(const sf::Event& event)
                 }
             }
 		}
-        else
+		else if (mBall->GetOwner() && mBall->GetOwner()->IsTag(PLAYER_TEAM2))
         {
             for (Player* player : mTeam2)
             {
                 if (player->IsInside(event.mouseButton.x, event.mouseButton.y))
                 {
                     mBall->SetOwner(player);
+                    mBall->SetIsMoving(true);
                     return;
                 }
             }
@@ -115,7 +116,7 @@ void RugbyScene::OnUpdate()
         else if (i == 1) color = sf::Color::Blue; // Bleu pour la deuxième zone
         else if (i == 2) color = sf::Color::Yellow; // Jaune pour la troisième zone
 
-        //Debug::DrawRectangle(aabb.xMin, aabb.yMin, aabb.xMax, aabb.yMax, color);
+        Debug::DrawRectangle(aabb.xMin, aabb.yMin, aabb.xMax - aabb.xMin, aabb.yMax - aabb.yMin, color);
     }
 }
 
@@ -129,6 +130,11 @@ void RugbyScene::GetTeamPlayers(std::vector<Player*>& team, int teamIndex) const
 	{
 		team = mTeam2;
 	}
+}
+
+const int RugbyScene::GetTeamWithBall() const
+{
+    return GetBall()->GetOwner()->IsTag(PLAYER_TEAM1) ? PLAYER_TEAM1 : PLAYER_TEAM2;
 }
 
 void RugbyScene::InitializeTeams()
