@@ -55,9 +55,12 @@ public:
     Player* GetNearestPlayerToOpponentLine();
 	const sf::Vector2f& GetOpponentLinePosition() const;
 
+    bool IsOffside();
+
     bool CheckAreaOutOfBounds();
 
     Player* GetNearestTeammate();
+	void GetSortedTeammatesByDistance(std::vector<Player*>& sortedTeammates);
 
     void MoveToPosition(float x, float y);
     void OnUpdate();

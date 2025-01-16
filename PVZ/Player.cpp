@@ -8,6 +8,9 @@
 #include "PlayerAction.h"
 #include "PlayerCondition.h"
 
+#include <algorithm>
+#include <cmath>
+
 void Player::OnInitialize()
 {
 	mpStateMachine = new StateMachine<Player>(this, State::Count);
@@ -234,6 +237,20 @@ const sf::Vector2f& Player::GetOpponentLinePosition() const
 	return position;
 }
 
+bool Player::IsOffside()
+{
+	Player* ballOwner = GetScene<RugbyScene>()->GetBall()->GetOwner();
+	if (ballOwner == this || !ballOwner->IsTag(mTag))
+	{
+		return false;
+	}
+
+	float playerDistance = Utils::GetDistance(GetPosition().x, GetPosition().y, GetOpponentLinePosition().x, GetOpponentLinePosition().y);
+	float ballOwnerDistance = Utils::GetDistance(ballOwner->GetPosition().x, ballOwner->GetPosition().y, GetOpponentLinePosition().x, GetOpponentLinePosition().y);
+
+	return ballOwnerDistance > playerDistance;
+}
+
 bool Player::CheckAreaOutOfBounds()
 {
 	if (mArea)
@@ -290,6 +307,15 @@ Player* Player::GetNearestTeammate()
 		}
 	}
 	return closestPlayer;
+}
+
+void Player::GetSortedTeammatesByDistance(std::vector<Player*>& sortedTeammates)
+{
+	std::sort(sortedTeammates.begin(), sortedTeammates.end(), [&](Player* a, Player* b)
+		{
+			return Utils::GetDistance(GetPosition().x, GetPosition().y, a->GetPosition().x, a->GetPosition().y) <
+				Utils::GetDistance(GetPosition().x, GetPosition().y, b->GetPosition().x, b->GetPosition().y);
+		});
 }
 
 

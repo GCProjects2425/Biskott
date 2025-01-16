@@ -62,11 +62,7 @@ void PlayerAction_Support::OnStart(Player* pPlayer)
 void PlayerAction_Support::OnUpdate(Player* pPlayer)
 {
 	RugbyScene* pScene = pPlayer->GetScene<RugbyScene>();
-	Player* ballOwner = pScene->GetBall()->GetOwner();
 	sf::Vector2f opponentLinePos = pPlayer->GetOpponentLinePosition();
-
-	float playerDistance = Utils::GetDistance(pPlayer->GetPosition().x, pPlayer->GetPosition().y, opponentLinePos.x, opponentLinePos.y);
-	float ballOwnerDistance = Utils::GetDistance(ballOwner->GetPosition().x, ballOwner->GetPosition().y, opponentLinePos.x, opponentLinePos.y);
 
 	sf::Vector2f direction = opponentLinePos - pPlayer->GetPosition();
 
@@ -76,7 +72,7 @@ void PlayerAction_Support::OnUpdate(Player* pPlayer)
 		direction /= magnitude;
 	}
 
-	if (ballOwnerDistance > playerDistance)
+	if (pPlayer->IsOffside())
 	{
 		pPlayer->SetDirection(-direction.x, direction.y, PLAYER_SPEED);
 	}
@@ -89,19 +85,53 @@ void PlayerAction_Support::OnUpdate(Player* pPlayer)
 void PlayerAction_Passing::OnStart(Player* pPlayer)
 {
 	RugbyScene* pScene = pPlayer->GetScene<RugbyScene>();
-	Player* nearestTeammate = pPlayer->GetNearestTeammate();
-	if (nearestTeammate)
+	std::vector<Player*> sortedTeammates;
+	pScene->GetTeamPlayers(sortedTeammates, pPlayer->IsTag(RugbyScene::PLAYER_TEAM1) ? RugbyScene::PLAYER_TEAM1 : RugbyScene::PLAYER_TEAM2);
+	pPlayer->GetSortedTeammatesByDistance(sortedTeammates);
+
+	Player* playerTarget = nullptr;
+
+	for (std::vector<Player*>::iterator it = sortedTeammates.begin(); it != sortedTeammates.end();)
 	{
-		if (Player* interceptor = pPlayer->OpponentIsInTrajectory(nearestTeammate))
+		if (sortedTeammates.size() == 1)
 		{
-			pScene->GetBall()->SetOwner(interceptor);
+			playerTarget = *it;
+			break;
 		}
-		else
+
+		if((*it)->IsOffside())
 		{
-			pScene->GetBall()->SetOwner(nearestTeammate);
+			it = sortedTeammates.erase(it);
+			continue;
 		}
-		pScene->GetBall()->SetIsMoving(true);
+
+		if (pPlayer->OpponentIsInTrajectory(*it))
+		{
+			it = sortedTeammates.erase(it);
+			continue;
+		}
+
+		if ((*it)->OpponentIsNear())
+		{
+			it = sortedTeammates.erase(it);
+			continue;
+		}
+
+		++it;
 	}
+
+	if (sortedTeammates.size() > 0)
+	{
+		playerTarget = sortedTeammates[0];
+	}
+
+	if (playerTarget == nullptr)
+	{
+		playerTarget = pScene->GetRandomPlayerFromTeam(pPlayer->IsTag(RugbyScene::PLAYER_TEAM1) ? RugbyScene::PLAYER_TEAM1 : RugbyScene::PLAYER_TEAM2);
+	}
+
+	pScene->GetBall()->SetOwner(playerTarget);
+	pScene->GetBall()->SetIsMoving(true);
 }
 
 void PlayerAction_Passing::OnUpdate(Player* pPlayer)
