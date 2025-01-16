@@ -52,6 +52,13 @@ void Player::OnInitialize()
 			transition->AddCondition<PlayerCondition_HasBall>(false);
 			transition->AddCondition<PlayerCondition_OpponentHasBall>(false);
 		}
+
+		//-> PASSING
+		{
+			auto transition = pAttack->CreateTransition(State::Passing);
+			transition->AddCondition<PlayerCondition_HasBall>(true);
+			transition->AddCondition<PlayerCondition_IsInDanger>();
+		}
 	}
 
 	// DEFENSE
@@ -84,6 +91,15 @@ void Player::OnInitialize()
 		{
 			auto transition = pSupport->CreateTransition(State::Defense);
 			transition->AddCondition<PlayerCondition_OpponentHasBall>();
+		}
+	}
+
+	// PASSING
+	{
+		Action<Player>* pPassing = mpStateMachine->CreateAction<PlayerAction_Passing>(State::Passing);
+		{
+			auto transition = pPassing->CreateTransition(State::Attack);
+			transition->AddCondition<PlayerCondition_HasBall>(false);
 		}
 	}
 
@@ -127,7 +143,7 @@ bool Player::OpponentIsNear(Player* player)
 	for (Player* oppsPlayer : oppsTeamPlayers)
 	{
 		float distance = Utils::GetDistance(oppsPlayer->GetPosition().x, oppsPlayer->GetPosition().y, player->GetPosition().x, player->GetPosition().y);
-		if (distance <= 100.f)
+		if (distance <= 50.f)
 		{
 			return true;
 		}

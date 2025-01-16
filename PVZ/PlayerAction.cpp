@@ -28,7 +28,7 @@ void PlayerAction_Attack::OnUpdate(Player* pPlayer)
 		direction /= magnitude;
 	}
 	
-	pPlayer->SetDirection(direction.x, 0, 100.f);
+	pPlayer->SetDirection(direction.x, 0, PLAYER_SPEED);
 }
 
 void PlayerAction_Defense::OnStart(Player* pPlayer)
@@ -48,7 +48,7 @@ void PlayerAction_Defense::OnUpdate(Player* pPlayer)
 		direction /= magnitude;
 	}
 
-	pPlayer->SetDirection(direction.x, direction.y, 100.f);
+	pPlayer->SetDirection(direction.x, direction.y, PLAYER_SPEED);
 }
 
 void PlayerAction_Support::OnStart(Player* pPlayer)
@@ -75,10 +75,25 @@ void PlayerAction_Support::OnUpdate(Player* pPlayer)
 
 	if (ballOwnerDistance > playerDistance)
 	{
-		pPlayer->SetDirection(-direction.x, direction.y, 100.f);
+		pPlayer->SetDirection(-direction.x, direction.y, PLAYER_SPEED);
 	}
 	else
 	{
-		pPlayer->SetDirection(direction.x, direction.y, 100.f);
+		pPlayer->SetDirection(direction.x, direction.y, PLAYER_SPEED);
 	}
+}
+
+void PlayerAction_Passing::OnStart(Player* pPlayer)
+{
+	RugbyScene* pScene = pPlayer->GetScene<RugbyScene>();
+	Player* nearestTeammate = pPlayer->GetNearestTeammate();
+	if (nearestTeammate)
+	{
+		pScene->GetBall()->SetOwner(nearestTeammate);
+		pScene->GetBall()->SetIsMoving(true);
+	}
+}
+
+void PlayerAction_Passing::OnUpdate(Player* pPlayer)
+{
 }

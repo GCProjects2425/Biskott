@@ -3,6 +3,8 @@
 #include <vector>
 #include "AABB.h"
 
+#define PLAYER_SPEED 50.f
+
 class Player;
 class Ball;
 

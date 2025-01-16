@@ -22,3 +22,8 @@ bool PlantCondition_FullAmmo::OnTest(Plant* pPlant)
 	return pPlant->mAmmo == pPlant->mMaxAmmo;
 }
 */
+
+bool PlayerCondition_IsInDanger::OnTest(Player* pPlayer)
+{
+	return pPlayer->OpponentIsNear();
+}

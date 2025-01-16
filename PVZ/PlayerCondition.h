@@ -14,6 +14,12 @@ public:
 	bool OnTest(Player* owner) override;
 };
 
+class PlayerCondition_IsInDanger : public Condition<Player>
+{
+public:
+	bool OnTest(Player* owner) override;
+};
+
 /*class PlantCondition_FullAmmo : public Condition<Plant>
 {
 public:

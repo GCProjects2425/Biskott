@@ -15,6 +15,7 @@ class Player : public Entity
         Attack,
         Defense,
         Support,
+        Passing,
 
         Count
     };
@@ -49,7 +50,9 @@ public:
 	friend class PlayerAction_Attack;
 	friend class PlayerAction_Defense;
 	friend class PlayerAction_Support;
+	friend class PlayerAction_Passing;
 
 	friend class PlayerCondition_HasBall;
     friend class PlayerCondition_OpponentHasBall;
+    friend class PlayerCondition_IsInDanger;
 };
