@@ -1,22 +1,21 @@
 #pragma once
 #include "Condition.h"
-#include "Plant.h"
+#include "Player.h"
 
-/*class PlantCondition_ZombieOnLane : public Condition<Plant>
+class PlayerCondition_HasBall : public Condition<Player>
+{
+public:
+	bool OnTest(Player* owner) override;
+};
+
+class PlayerCondition_OpponentHasBall : public Condition<Player>
+{
+public:
+	bool OnTest(Player* owner) override;
+};
+
+/*class PlantCondition_FullAmmo : public Condition<Plant>
 {
 public:
 	bool OnTest(Plant* owner) override;
-};
-
-class PlantCondition_NoAmmo : public Condition<Plant>
-{
-public:
-	bool OnTest(Plant* owner) override;
-};
-
-class PlantCondition_FullAmmo : public Condition<Plant>
-{
-public:
-	bool OnTest(Plant* owner) override;
-};
-*/
+};*/

@@ -1,19 +1,18 @@
 #include "PlayerCondition.h"
 
-#include "PVZScene.h"
 
-/*bool PlantCondition_ZombieOnLane::OnTest(Plant* pPlant)
+bool PlayerCondition_HasBall::OnTest(Player* pPlayer)
 {
-	PVZScene* pScene = pPlant->GetScene<PVZScene>();
-
-	int areaIndex = pPlant->mAreaIndex;
-
-	bool condition = pScene->IsZombieInArea(areaIndex);
-
-	return condition;
+	return pPlayer->HasBall();
 }
 
-bool PlantCondition_NoAmmo::OnTest(Plant* pPlant)
+bool PlayerCondition_OpponentHasBall::OnTest(Player* pPlayer)
+{
+	RugbyScene* pScene = pPlayer->GetScene<RugbyScene>();
+	return !pPlayer->IsTag(pScene->GetTeamWithBall());
+}
+
+/*bool PlantCondition_NoAmmo::OnTest(Plant* pPlant)
 {
 	return pPlant->mAmmo == 0;
 }

@@ -34,7 +34,6 @@ public:
 	void GetTeamPlayers(std::vector<Player*>& team, int teamIndex) const;
     const int GetTeamWithBall() const;
 	Ball* GetBall() const { return mBall; }
-    Player* GetClosestTeammateToBall();
 
 private:
     void InitializeTeams(); 
