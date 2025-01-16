@@ -28,28 +28,33 @@ bool Player::OpponentIsNear(Player* player)
 
 bool Player::CheckAreaOutOfBounds()
 {
-	if(mArea)
+	if (mArea)
 	{
 		const sf::Vector2f& position = GetPosition();
 		sf::Vector2f newPosition = position;
-		if ((position.x - GetRadius()) <= mArea->xMin)
-			newPosition = sf::Vector2f(mArea->xMin + GetRadius(), newPosition.y);
-		if ((position.x + GetRadius()) >= mArea->xMax)
-			newPosition = sf::Vector2f(mArea->xMax - GetRadius(), newPosition.y);
-		if ((position.y - GetRadius()) <= mArea->yMin)
-			newPosition = sf::Vector2f(newPosition.x, mArea->yMin + GetRadius());
-		if ((position.y + GetRadius()) >= (mArea->xMin + mArea->yMax))
-			newPosition = sf::Vector2f(newPosition.x, (mArea->xMin + mArea->yMax) - GetRadius());
 
-		SetPosition(newPosition.x, newPosition.y);
+		// Vérifier les limites horizontales (x)
+		if ((position.x - GetRadius()) < mArea->xMin)
+			newPosition.x = mArea->xMin + GetRadius();
+		if ((position.x + GetRadius()) > mArea->xMax)
+			newPosition.x = mArea->xMax - GetRadius();
 
-		/*if (position.x < mArea->xMin || position.x > mArea->xMax || position.y < mArea->yMin || position.y > mArea->yMax)
+		// Vérifier les limites verticales (y)
+		if ((position.y - GetRadius()) < mArea->yMin)
+			newPosition.y = mArea->yMin + GetRadius();
+		if ((position.y + GetRadius()) > mArea->yMax)
+			newPosition.y = mArea->yMax - GetRadius();
+
+		// Si la position a changé, appliquer la correction
+		if (newPosition != position)
 		{
-			return true;
-		}*/
+			SetPosition(newPosition.x, newPosition.y);
+			return true; // La position a été corrigée
+		}
 	}
-	return false;
+	return false; // Pas de correction nécessaire
 }
+
 
 void Player::MoveToPosition(float x, float y)
 {
