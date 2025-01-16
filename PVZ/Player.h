@@ -16,6 +16,8 @@ public:
 
     bool OpponentIsNear();
     bool OpponentIsNear(Player* player);
+	bool OpponentIsInTrajectory(Player* playerTarget);
+	bool OpponentIsInTrajectory(Player* player, Player* playerTarget);
 
     bool CheckAreaOutOfBounds();
 

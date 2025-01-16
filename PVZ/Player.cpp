@@ -11,7 +11,6 @@ bool Player::OpponentIsNear()
 
 bool Player::OpponentIsNear(Player* player)
 {
-	bool isOpponentNear = false;
 	RugbyScene* pScene = GetScene<RugbyScene>();
 	std::vector<Player*> oppsTeamPlayers;
 	pScene->GetTeamPlayers(oppsTeamPlayers, mTag == RugbyScene::Tag::PLAYER_TEAM1 ? RugbyScene::Tag::PLAYER_TEAM2 : RugbyScene::Tag::PLAYER_TEAM1);
@@ -20,11 +19,46 @@ bool Player::OpponentIsNear(Player* player)
 		float distance = Utils::GetDistance(oppsPlayer->GetPosition().x, oppsPlayer->GetPosition().y, player->GetPosition().x, player->GetPosition().y);
 		if (distance <= 100.f)
 		{
-			isOpponentNear = true;
-			break;
+			return true;
 		}
 	}
-	return isOpponentNear;
+	return false;
+}
+
+bool Player::OpponentIsInTrajectory(Player* playerTarget)
+{
+	return OpponentIsInTrajectory(this, playerTarget);
+}
+
+bool Player::OpponentIsInTrajectory(Player* player, Player* playerTarget)
+{
+	RugbyScene* pScene = GetScene<RugbyScene>();
+	std::vector<Player*> oppsTeamPlayers;
+	pScene->GetTeamPlayers(oppsTeamPlayers, mTag == RugbyScene::Tag::PLAYER_TEAM1 ? RugbyScene::Tag::PLAYER_TEAM2 : RugbyScene::Tag::PLAYER_TEAM1);
+	for (Player* oppsPlayer : oppsTeamPlayers)
+	{
+		sf::Vector2f AB = playerTarget->GetPosition() - player->GetPosition();
+		sf::Vector2f AC = oppsPlayer->GetPosition() - player->GetPosition();
+		sf::Vector2f BC = oppsPlayer->GetPosition() - playerTarget->GetPosition();
+
+		float dotAC_AB = AC.x * AB.x + AC.y * AB.y;
+		float dotBC_AB = BC.x * AB.x + BC.y * AB.y;
+
+		bool isBetween = dotAC_AB >= 0 && dotBC_AB <= 0;
+
+		if(isBetween)
+		{
+			float distance = std::abs(AB.y * oppsPlayer->GetPosition().x
+				- AB.x * oppsPlayer->GetPosition().y
+				+ playerTarget->GetPosition().x * player->GetPosition().y
+				- playerTarget->GetPosition().y * player->GetPosition().x)
+				/ std::sqrt(AB.y * AB.y + AB.x * AB.x);
+
+			if (distance <= oppsPlayer->GetRadius())
+				return true;
+		}
+	}
+	return false;
 }
 
 bool Player::CheckAreaOutOfBounds()
@@ -78,7 +112,7 @@ void Player::OnUpdate()
 			if (player != this)
 			{
 				sf::Color color;
-				if(OpponentIsNear(player))
+				if(OpponentIsNear(player) || OpponentIsInTrajectory(player))
 					color = sf::Color::Red;
 				else
 					color = sf::Color::Green;
