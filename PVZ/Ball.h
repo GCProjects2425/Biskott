@@ -5,14 +5,15 @@
 class Ball : public Entity
 {
 public:
-	void SetOwner(Player* owner); // Définir le joueur possédant la balle
-	Player* GetOwner() const { return mOwner; } // Obtenir le joueur possédant la balle
+	void SetOwner(Player* owner); 
+	Player* GetOwner() const { return mOwner; } 
 
-	void SetIsMoving(bool value) { mIsMoving = value; } // Définir si la balle est en mouvement
-	bool IsMoving() const { return mIsMoving; } // Indique si la balle est en mouvement
+	void SetIsMoving(bool value) { mIsMoving = value; }
+	bool IsMoving() const { return mIsMoving; } 
 
-    void OnUpdate(); // Déplacement de la balle
+    void OnUpdate(); 
+	void OnCollision();
 private:
-	Player* mOwner = nullptr; // Joueur possédant la balle
-	bool mIsMoving = false; // Indique si la balle est en mouvement
+	Player* mOwner = nullptr;
+	bool mIsMoving = false;
 };
