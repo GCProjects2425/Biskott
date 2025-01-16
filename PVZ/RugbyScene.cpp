@@ -3,6 +3,7 @@
 #include "Ball.h"
 #include "Debug.h"
 #include "GameManager.h"
+#include "Utils.h"
 
 #define LANE_COUNT 3
 
@@ -235,4 +236,63 @@ int RugbyScene::GetPlayerLane(const sf::Vector2f& position) const
         }
     }
     return -1;
+}
+
+Player* RugbyScene::GetClosestTeammateToBall()
+{
+    if (!mBall || !mBall->GetOwner())
+        return nullptr;
+
+    const Tag team = static_cast<Tag>(GetTeamWithBall());
+    Player* playerWithBall = mBall->GetOwner();
+
+    Player* closestPlayer = nullptr;
+    float minDistance = std::numeric_limits<float>::max();
+
+    if (team == Tag::PLAYER_TEAM1)
+    {
+        for (Player* teammate : mTeam1)
+        {
+            if (teammate == playerWithBall)
+                continue;
+
+            sf::Vector2f ballPosition = playerWithBall->GetPosition();
+            sf::Vector2f teammatePosition = teammate->GetPosition();
+
+            // Calculer la distance
+            float distance = Utils::GetDistance(
+                static_cast<int>(ballPosition.x), static_cast<int>(ballPosition.y),
+                static_cast<int>(teammatePosition.x), static_cast<int>(teammatePosition.y)
+            );
+
+            if (distance < minDistance)
+            {
+                minDistance = distance;
+                closestPlayer = teammate;
+            }
+        }
+    }else if (team == Tag::PLAYER_TEAM2)
+    {
+        for (Player* teammate : mTeam2)
+        {
+            if (teammate == playerWithBall)
+                continue;
+
+                sf::Vector2f ballPosition = playerWithBall->GetPosition();
+                sf::Vector2f teammatePosition = teammate->GetPosition();
+
+                // Calculer la distance
+                float distance = Utils::GetDistance(
+                    static_cast<int>(ballPosition.x), static_cast<int>(ballPosition.y),
+                    static_cast<int>(teammatePosition.x), static_cast<int>(teammatePosition.y)
+                );
+
+            if (distance < minDistance)
+            {
+                minDistance = distance;
+                closestPlayer = teammate;
+            }
+        }
+    }
+    return closestPlayer;
 }
