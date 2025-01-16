@@ -34,11 +34,13 @@ public:
 	void GetTeamPlayers(std::vector<Player*>& team, int teamIndex) const;
     const int GetTeamWithBall() const;
 	Ball* GetBall() const { return mBall; }
+    Player* GetClosestTeammateToBall();
+
 private:
     void InitializeTeams(); 
     void ResetPositions(); 
     void UpdateScore(int team);
     void DrawField();
     
-    int GetPlayerLane(const sf::Vector2f& position) const; // Retourne la zone d'un joueur
+    int GetPlayerLane(const sf::Vector2f& position) const; 
 };
