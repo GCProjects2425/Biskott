@@ -34,32 +34,29 @@ bool Player::CheckAreaOutOfBounds()
 		const sf::Vector2f& position = GetPosition();
 		sf::Vector2f newPosition = position;
 
-		// Vérifier les limites horizontales (x)
 		if ((position.x - GetRadius()) < mArea->xMin)
 			newPosition.x = mArea->xMin + GetRadius();
 		if ((position.x + GetRadius()) > mArea->xMax)
 			newPosition.x = mArea->xMax - GetRadius();
 
-		// Vérifier les limites verticales (y)
 		if ((position.y - GetRadius()) < mArea->yMin)
 			newPosition.y = mArea->yMin + GetRadius();
 		if ((position.y + GetRadius()) > mArea->yMax)
 			newPosition.y = mArea->yMax - GetRadius();
 
-		// Si la position a changé, appliquer la correction
 		if (newPosition != position)
 		{
 			SetPosition(newPosition.x, newPosition.y);
-			return true; // La position a été corrigée
+			return true; 
 		}
 	}
-	return false; // Pas de correction nécessaire
+	return false;
 }
 
 
 void Player::MoveToPosition(float x, float y)
 {
-    GoToPosition(x, y, speed); // Utilise la méthode de déplacement de l'entité
+    GoToPosition(x, y, speed);
 }
 
 void Player::OnUpdate()

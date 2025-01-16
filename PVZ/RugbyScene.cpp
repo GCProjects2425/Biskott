@@ -23,10 +23,8 @@ void RugbyScene::OnInitialize()
     // Zone Jaune : Centre (chevauche Rouge et Bleue)
     mAreas[2] = { 1, quarterHeight, width - 1, 3 * quarterHeight };
 
-    // Initialiser les équipes
     InitializeTeams();
 
-    // Créer la balle
     mBall = CreateEntity<Ball>(10.0f, sf::Color::Magenta);
     mBall->SetPosition(width / 2, height / 2);
     mBall->SetTag(BALL);
@@ -107,7 +105,7 @@ void RugbyScene::OnUpdate()
     // Dessiner le terrain
     DrawField();
 
-    // Dessiner les zones 
+    // Dessiner les areas 
     for (int i = 0; i < LANE_COUNT; i++)
     {
         const AABB& aabb = mAreas[i];
@@ -180,7 +178,6 @@ void RugbyScene::InitializeTeams()
 
 void RugbyScene::ResetPositions()
 {
-    // R�initialiser les positions des joueurs et de la balle apr�s un essai
     int width = GetWindowWidth();
     int height = GetWindowHeight();
 
