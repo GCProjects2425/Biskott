@@ -102,6 +102,10 @@ void Player::OnCollision(Entity* pCollidedWith)
 		if (player)
 		{
 			if (player->HasBall())
+			{
+
+			}
+
 		}
 	}
 }
