@@ -2,6 +2,7 @@
 #include "Debug.h"
 #include "Entity.h"
 #include "Utils.h"
+#include "Ball.h"
 
 bool Player::OpponentIsNear()
 {
@@ -88,4 +89,19 @@ void Player::OnUpdate()
         /*const sf::Vector2f& position = GetPosition();
         Debug::DrawCircle(position.x, position.y, 10, sf::Color::Yellow); // Indicateur de balle*/
     }
+}
+
+
+void Player::OnCollision(Entity* pCollidedWith)
+{
+
+	if (pCollidedWith->IsTag(RugbyScene::Tag::PLAYER_TEAM1) || pCollidedWith->IsTag(RugbyScene::Tag::PLAYER_TEAM2))
+	{
+
+		Player* player = dynamic_cast<Player*>(pCollidedWith);
+		if (player)
+		{
+			if (player->HasBall())
+		}
+	}
 }

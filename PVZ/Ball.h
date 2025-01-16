@@ -12,7 +12,6 @@ public:
 	bool IsMoving() const { return mIsMoving; } 
 
     void OnUpdate(); 
-	void OnCollision();
 private:
 	Player* mOwner = nullptr;
 	bool mIsMoving = false;
