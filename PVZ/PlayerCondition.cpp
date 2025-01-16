@@ -25,5 +25,5 @@ bool PlantCondition_FullAmmo::OnTest(Plant* pPlant)
 
 bool PlayerCondition_IsInDanger::OnTest(Player* pPlayer)
 {
-	return pPlayer->OpponentIsNear();
+	return !pPlayer->HasTemporaryAttribute(TemporaryAttribute::Type::Invincibility) && pPlayer->OpponentIsNear();
 }

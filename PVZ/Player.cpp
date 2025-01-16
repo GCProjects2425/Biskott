@@ -130,6 +130,12 @@ void Player::OnInitialize()
 	mpStateMachine->SetState(State::Idle);
 }
 
+bool Player::IsScoringATry() const
+{
+	float distance = Utils::GetDistance(GetPosition().x, GetPosition().y, GetOpponentLinePosition().x, GetOpponentLinePosition().y);
+	return HasBall() && distance <= 0;
+}
+
 bool Player::OpponentIsNear()
 {
 	return OpponentIsNear(this);
@@ -294,6 +300,7 @@ void Player::MoveToPosition(float x, float y)
 
 void Player::OnUpdate()
 {
+	UpdateTemporaryAttributes(GetDeltaTime());
 	RugbyScene* pScene = GetScene<RugbyScene>();
 
 	if (HasBall())
@@ -339,8 +346,7 @@ void Player::OnUpdate()
 
 void Player::OnCollision(Entity* pCollidedWith)
 {
-
-	if (!pCollidedWith->IsTag(mTag) && !pCollidedWith->IsTag(RugbyScene::Tag::BALL))
+	if (!pCollidedWith->IsTag(mTag) && !pCollidedWith->IsTag(RugbyScene::Tag::BALL) && !HasTemporaryAttribute(TemporaryAttribute::Type::Invincibility))
 	{
 		if (Player* player = dynamic_cast<Player*>(pCollidedWith))
 		{
@@ -354,4 +360,35 @@ void Player::OnCollision(Entity* pCollidedWith)
 
 		}
 	}
+}
+
+void Player::AddTemporaryAttribute(TemporaryAttribute::Type type, float duration)
+{
+	mTemporaryAttributes.push_back({type, duration});
+}
+
+void Player::UpdateTemporaryAttributes(float deltaTime)
+{
+	for (auto it = mTemporaryAttributes.begin(); it != mTemporaryAttributes.end();)
+	{
+		it->duration -= deltaTime;
+		if (it->duration <= 0.f)
+		{
+			it = mTemporaryAttributes.erase(it); // Supprime l'attribut expiré
+		}
+		else
+		{
+			++it;
+		}
+	}
+}
+
+bool Player::HasTemporaryAttribute(TemporaryAttribute::Type type) const
+{
+	for (const auto& attr : mTemporaryAttributes)
+	{
+		if (attr.type == type)
+			return true;
+	}
+	return false;
 }

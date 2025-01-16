@@ -5,6 +5,8 @@
 #include "GameManager.h"
 #include "Utils.h"
 
+#include <random>
+
 #define LANE_COUNT 3
 
 void RugbyScene::OnInitialize()
@@ -29,7 +31,7 @@ void RugbyScene::OnInitialize()
     mBall = CreateEntity<Ball>(10.0f, sf::Color::Magenta);
     mBall->SetPosition(width / 2, height / 2);
     mBall->SetTag(BALL);
-    mBall->SetOwner(mTeam2[1]);
+    mBall->SetOwner(GetRandomPlayerFromTeam(PLAYER_TEAM1));
 }
 
 void RugbyScene::OnEvent(const sf::Event& event)
@@ -132,6 +134,12 @@ void RugbyScene::OnUpdate()
 
         Debug::DrawRectangle(aabb.xMin, aabb.yMin, aabb.xMax - aabb.xMin, aabb.yMax - aabb.yMin, color);
     }
+
+    int team = CheckIfScoringATry();
+	if (team >= 0)
+	{
+		UpdateScore(team);
+	}
 }
 
 void RugbyScene::GetTeamPlayers(std::vector<Player*>& team, int teamIndex) const
@@ -149,6 +157,34 @@ void RugbyScene::GetTeamPlayers(std::vector<Player*>& team, int teamIndex) const
 const int RugbyScene::GetTeamWithBall() const
 {
     return GetBall()->GetOwner()->IsTag(PLAYER_TEAM1) ? PLAYER_TEAM1 : PLAYER_TEAM2;
+}
+
+Player* RugbyScene::GetRandomPlayerFromTeam(int teamIndex) const
+{
+	std::random_device rd;
+	std::mt19937 gen(rd());
+	std::uniform_int_distribution<> dis(0, 4);
+	int randomIndex = dis(gen);
+
+	if (teamIndex == PLAYER_TEAM1)
+	{
+		return mTeam1[randomIndex];
+	}
+	else if (teamIndex == PLAYER_TEAM2)
+	{
+		return mTeam2[randomIndex];
+	}
+    return nullptr;
+}
+
+int RugbyScene::CheckIfScoringATry() const
+{
+	Player* ballOwner = GetBall()->GetOwner();
+    if(ballOwner->IsScoringATry())
+	{
+		return ballOwner->IsTag(PLAYER_TEAM1) ? PLAYER_TEAM1 : PLAYER_TEAM2;
+	}
+    return -1;
 }
 
 void RugbyScene::InitializeTeams()
@@ -192,7 +228,7 @@ void RugbyScene::InitializeTeams()
     }
 }
 
-void RugbyScene::ResetPositions()
+void RugbyScene::ResetPositions(int teamWin)
 {
     int width = GetWindowWidth();
     int height = GetWindowHeight();
@@ -208,22 +244,22 @@ void RugbyScene::ResetPositions()
     }
 
     // Positionner la balle au centre
-    mBall->SetPosition(width / 2, height / 2);
+    mBall->SetOwner(GetRandomPlayerFromTeam(teamWin == PLAYER_TEAM1 ? PLAYER_TEAM2 : PLAYER_TEAM1));
 }
 
 void RugbyScene::UpdateScore(int team)
 {
-    if (team == 1)
+    if (team == PLAYER_TEAM1)
     {
         mScoreTeam1++;
     }
-    else if (team == 2)
+    else if (team == PLAYER_TEAM2)
     {
         mScoreTeam2++;
     }
 
     // R�initialiser les positions apr�s la mise � jour du score
-    ResetPositions();
+    ResetPositions(team);
 }
 
 void RugbyScene::DrawField()

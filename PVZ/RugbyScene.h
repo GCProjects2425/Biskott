@@ -37,9 +37,13 @@ public:
     const int GetTeamWithBall() const;
 	Ball* GetBall() const { return mBall; }
 
+	Player* GetRandomPlayerFromTeam(int teamIndex) const;
+
+	int CheckIfScoringATry() const;
+
 private:
     void InitializeTeams(); 
-    void ResetPositions(); 
+    void ResetPositions(int teamWin); 
     void UpdateScore(int team);
     void DrawField();
     

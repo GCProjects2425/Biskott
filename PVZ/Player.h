@@ -5,6 +5,19 @@
 template<typename T>
 class StateMachine;
 
+struct TemporaryAttribute
+{
+    enum class Type
+    {
+        Invincibility,
+        IncreasedSpeed,
+        PassRestriction
+    };
+
+    Type type;
+    float duration; // Temps restant en secondes
+};
+
 class Player : public Entity
 {
     StateMachine<Player>* mpStateMachine;
@@ -23,6 +36,8 @@ class Player : public Entity
     bool hasBall = false;
     float speed = 100.0f;
 	AABB* mArea = nullptr;
+
+    std::vector<TemporaryAttribute> mTemporaryAttributes;
 public:
     void SetHasBall(bool value) { hasBall = value; }
     bool HasBall() const { return hasBall; }
@@ -30,6 +45,8 @@ public:
     void SetArea(AABB* area) { mArea = area; };
 
     void OnInitialize();
+
+	bool IsScoringATry() const;
 
     bool OpponentIsNear();
     bool OpponentIsNear(Player* player);
@@ -45,6 +62,10 @@ public:
     void MoveToPosition(float x, float y);
     void OnUpdate();
     void OnCollision(Entity* pCollidedWith);
+
+    void AddTemporaryAttribute(TemporaryAttribute::Type type, float duration);
+    void UpdateTemporaryAttributes(float deltaTime);
+    bool HasTemporaryAttribute(TemporaryAttribute::Type type) const;
 
     friend class PlayerAction_Idle;
 	friend class PlayerAction_Attack;
