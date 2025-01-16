@@ -32,6 +32,8 @@ public:
     void OnUpdate() override;
 
 	void GetTeamPlayers(std::vector<Player*>& team, int teamIndex) const;
+    const int GetTeamWithBall() const;
+	Ball* GetBall() const { return mBall; }
 private:
     void InitializeTeams(); 
     void ResetPositions(); 

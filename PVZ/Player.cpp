@@ -1,8 +1,8 @@
 #include "Player.h"
 #include "Debug.h"
 #include "Entity.h"
-#include "RugbyScene.h"
 #include "Utils.h"
+#include "Ball.h"
 
 bool Player::OpponentIsNear()
 {
@@ -18,7 +18,7 @@ bool Player::OpponentIsNear(Player* player)
 	for (Player* oppsPlayer : oppsTeamPlayers)
 	{
 		float distance = Utils::GetDistance(oppsPlayer->GetPosition().x, oppsPlayer->GetPosition().y, player->GetPosition().x, player->GetPosition().y);
-		if (distance <= 50.f)
+		if (distance <= 100.f)
 		{
 			isOpponentNear = true;
 			break;
@@ -27,6 +27,36 @@ bool Player::OpponentIsNear(Player* player)
 	return isOpponentNear;
 }
 
+bool Player::CheckAreaOutOfBounds()
+{
+	if (mArea)
+	{
+		const sf::Vector2f& position = GetPosition();
+		sf::Vector2f newPosition = position;
+
+		// Vérifier les limites horizontales (x)
+		if ((position.x - GetRadius()) < mArea->xMin)
+			newPosition.x = mArea->xMin + GetRadius();
+		if ((position.x + GetRadius()) > mArea->xMax)
+			newPosition.x = mArea->xMax - GetRadius();
+
+		// Vérifier les limites verticales (y)
+		if ((position.y - GetRadius()) < mArea->yMin)
+			newPosition.y = mArea->yMin + GetRadius();
+		if ((position.y + GetRadius()) > mArea->yMax)
+			newPosition.y = mArea->yMax - GetRadius();
+
+		// Si la position a changé, appliquer la correction
+		if (newPosition != position)
+		{
+			SetPosition(newPosition.x, newPosition.y);
+			return true; // La position a été corrigée
+		}
+	}
+	return false; // Pas de correction nécessaire
+}
+
+
 void Player::MoveToPosition(float x, float y)
 {
     GoToPosition(x, y, speed); // Utilise la méthode de déplacement de l'entité
@@ -34,6 +64,8 @@ void Player::MoveToPosition(float x, float y)
 
 void Player::OnUpdate()
 {
+	CheckAreaOutOfBounds();
+	const sf::Vector2f lastPosition = GetPosition();
     if (HasBall())
     {
         RugbyScene* pScene = GetScene<RugbyScene>();
@@ -54,7 +86,27 @@ void Player::OnUpdate()
 
 			}
 		}
-        /*const sf::Vector2f& position = GetPosition();
-        Debug::DrawCircle(position.x, position.y, 10, sf::Color::Yellow); // Indicateur de balle*/
+        const sf::Vector2f& position = GetPosition();
+        Debug::DrawCircle(position.x, position.y, 10, sf::Color::Yellow); // Indicateur de balle
     }
+}
+
+
+void Player::OnCollision(Entity* pCollidedWith)
+{
+
+	if (!pCollidedWith->IsTag(mTag) && !pCollidedWith->IsTag(RugbyScene::Tag::BALL))
+	{
+		if (Player* player = dynamic_cast<Player*>(pCollidedWith))
+		{
+			RugbyScene* pScene = GetScene<RugbyScene>();
+			if (player->HasBall() && !pScene->GetBall()->GetIsAlreadySwitched())
+			{
+				Debug::DrawText(10, 10, std::to_string(GetDeltaTime()), sf::Color::Green);
+				pScene->GetBall()->SetOwner(this);
+				//Debug::DrawCircle(GetPosition().x, GetPosition().y, 50.f, sf::Color::Yellow);
+			}
+
+		}
+	}
 }

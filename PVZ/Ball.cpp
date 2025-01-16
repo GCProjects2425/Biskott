@@ -6,6 +6,7 @@ void Ball::SetOwner(Player* owner)
 		mOwner->SetHasBall(false);
 	owner->SetHasBall(true);
 	mOwner = owner;
+    SetIsAlreadySwitched(true);
 }
 
 void Ball::OnUpdate()
@@ -22,5 +23,6 @@ void Ball::OnUpdate()
 			SetIsMoving(false);
 		}
     }
+    SetIsAlreadySwitched(false);
     // Logique de déplacement ou de gestion de la balle
 }
