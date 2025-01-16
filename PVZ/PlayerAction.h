@@ -6,7 +6,7 @@
 class PlayerAction_Idle : public Action<Player>
 {
 public:
-	void OnStart(Player* pPlayer) override {}
+	void OnStart(Player* pPlayer) override;
 	void OnUpdate(Player* pPlayer) override {}
 	void OnEnd(Player* pPlayer) override {}
 };
