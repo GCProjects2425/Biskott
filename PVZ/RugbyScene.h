@@ -47,5 +47,6 @@ private:
     void UpdateScore(int team);
     void DrawField();
     
-    int GetPlayerLane(const sf::Vector2f& position) const; 
+    int GetPlayerLane(const sf::Vector2f& position) const;
+    void DrawScore();
 };

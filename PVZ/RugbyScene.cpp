@@ -123,6 +123,9 @@ void RugbyScene::OnUpdate()
     // Dessiner le terrain
     DrawField();
 
+    // Dessiner le score 
+    DrawScore();
+
     // Dessiner les areas 
     for (int i = 0; i < LANE_COUNT; i++)
     {
@@ -287,4 +290,16 @@ int RugbyScene::GetPlayerLane(const sf::Vector2f& position) const
         }
     }
     return -1;
+}
+
+void RugbyScene::DrawScore()
+{
+    int width = GetWindowWidth();
+
+    std::string scoreText =  std::to_string(mScoreTeam1) + " - " + std::to_string(mScoreTeam2);
+    float xPosition = width / 2.0f - 50;
+    float yPosition = 20.0f;  
+
+    // Dessiner le texte
+    Debug::DrawText(xPosition, yPosition, scoreText, sf::Color::White);
 }
