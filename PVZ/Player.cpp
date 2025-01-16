@@ -34,61 +34,75 @@ bool Player::CheckAreaOutOfBounds()
 		const sf::Vector2f& position = GetPosition();
 		sf::Vector2f newPosition = position;
 
-		// Vérifier les limites horizontales (x)
 		if ((position.x - GetRadius()) < mArea->xMin)
 			newPosition.x = mArea->xMin + GetRadius();
 		if ((position.x + GetRadius()) > mArea->xMax)
 			newPosition.x = mArea->xMax - GetRadius();
 
-		// Vérifier les limites verticales (y)
 		if ((position.y - GetRadius()) < mArea->yMin)
 			newPosition.y = mArea->yMin + GetRadius();
 		if ((position.y + GetRadius()) > mArea->yMax)
 			newPosition.y = mArea->yMax - GetRadius();
 
-		// Si la position a changé, appliquer la correction
 		if (newPosition != position)
 		{
 			SetPosition(newPosition.x, newPosition.y);
-			return true; // La position a été corrigée
+			return true; 
 		}
 	}
-	return false; // Pas de correction nécessaire
+	return false;
 }
 
 
 void Player::MoveToPosition(float x, float y)
 {
-    GoToPosition(x, y, speed); // Utilise la méthode de déplacement de l'entité
+    GoToPosition(x, y, speed);
 }
 
 void Player::OnUpdate()
 {
+	RugbyScene* pScene = GetScene<RugbyScene>();
+
+	if (HasBall())
+	{
+		// Récupérer le joueur le plus proche
+		Player* closestTeammate = pScene->GetClosestTeammateToBall();
+		if (closestTeammate)
+		{
+			// Tracer une ligne entre le joueur avec la balle et le plus proche
+			Debug::DrawLine(
+				GetPosition().x, GetPosition().y,
+				closestTeammate->GetPosition().x, closestTeammate->GetPosition().y,
+				sf::Color::Blue
+			);
+		}
+	}
+
 	CheckAreaOutOfBounds();
 	const sf::Vector2f lastPosition = GetPosition();
-    if (HasBall())
-    {
-        RugbyScene* pScene = GetScene<RugbyScene>();
+  //  if (HasBall())
+  //  {
+  //      RugbyScene* pScene = GetScene<RugbyScene>();
 
-		std::vector<Player*> teamPlayers;
-        pScene->GetTeamPlayers(teamPlayers, mTag);
+		//std::vector<Player*> teamPlayers;
+  //      pScene->GetTeamPlayers(teamPlayers, mTag);
 
-		for (Player* player : teamPlayers)
-		{
-			if (player != this)
-			{
-				sf::Color color;
-				if(OpponentIsNear(player))
-					color = sf::Color::Red;
-				else
-					color = sf::Color::Green;
-				Debug::DrawLine(GetPosition().x, GetPosition().y, player->GetPosition().x, player->GetPosition().y, color);
+		//for (Player* player : teamPlayers)
+		//{
+		//	if (player != this)
+		//	{
+		//		sf::Color color;
+		//		if(OpponentIsNear(player))
+		//			color = sf::Color::Red;
+		//		else
+		//			color = sf::Color::Green;
+		//		Debug::DrawLine(GetPosition().x, GetPosition().y, player->GetPosition().x, player->GetPosition().y, color);
 
-			}
-		}
-        const sf::Vector2f& position = GetPosition();
-        Debug::DrawCircle(position.x, position.y, 10, sf::Color::Yellow); // Indicateur de balle
-    }
+		//	}
+		//}
+  //      const sf::Vector2f& position = GetPosition();
+  //      Debug::DrawCircle(position.x, position.y, 10, sf::Color::Yellow); // Indicateur de balle
+  //  }
 }
 
 
