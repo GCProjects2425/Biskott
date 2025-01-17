@@ -42,7 +42,6 @@ class Player : public Entity
     };
 
     bool hasBall = false;
-    float speed = 100.0f;
 	AABB* mArea = nullptr;
 
     std::vector<TemporaryAttribute> mTemporaryAttributes;

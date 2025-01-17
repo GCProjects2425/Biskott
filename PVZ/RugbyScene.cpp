@@ -17,13 +17,10 @@ void RugbyScene::OnInitialize()
     int halfHeight = height / 2;
     int quarterHeight = height / 4;
 
-    // Zone Rouge : Haut jusqu'à la moitié
     mAreas[0] = { 1, 0, width - 1, halfHeight };
 
-    // Zone Bleue : Moitié jusqu'au bas
     mAreas[1] = { 1, halfHeight, width - 1, height };
 
-    // Zone Jaune : Centre (chevauche Rouge et Bleue)
     mAreas[2] = { 1, quarterHeight, width - 1, 3 * quarterHeight };
 
     InitializeTeams();
@@ -113,6 +110,11 @@ void RugbyScene::OnEvent(const sf::Event& event)
         isPaused = !isPaused;
 	}
 
+    if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::R)
+    {
+        ResetPositions(PLAYER_TEAM1);
+    }
+
     if(event.type == sf::Event::MouseMoved)
     {
 		if (mSelectedPlayer)
@@ -125,20 +127,16 @@ void RugbyScene::OnEvent(const sf::Event& event)
 
 void RugbyScene::OnUpdate()
 {
-    // Dessiner le terrain
     DrawField();
-
-    // Dessiner le score 
     DrawScore();
 
-    // Dessiner les areas 
     for (int i = 0; i < LANE_COUNT; i++)
     {
         const AABB& aabb = mAreas[i];
         sf::Color color;
-        if (i == 0) color = sf::Color::Red;     // Rouge pour la première zone
-        else if (i == 1) color = sf::Color::Blue; // Bleu pour la deuxième zone
-        else if (i == 2) color = sf::Color::Yellow; // Jaune pour la troisième zone
+        if (i == 0) color = sf::Color::Red;
+        else if (i == 1) color = sf::Color::Blue;
+        else if (i == 2) color = sf::Color::Yellow;
 
         Debug::DrawRectangle(aabb.xMin, aabb.yMin, aabb.xMax - aabb.xMin, aabb.yMax - aabb.yMin, color);
     }
@@ -184,12 +182,7 @@ Player* RugbyScene::GetRandomPlayerFromTeam(int teamIndex) const
 
 int RugbyScene::CheckIfScoringATry() const
 {
-    int teamIdx = GetBall()->IsScoringATry();
-    if(teamIdx >= 0)
-	{
-		return teamIdx;
-	}
-    return -1;
+    return GetBall()->IsScoringATry();
 }
 
 void RugbyScene::InitializeTeams()
@@ -201,7 +194,7 @@ void RugbyScene::InitializeTeams()
     for (int i = 0; i < 5; ++i)
     {
         Player* player = CreateEntity<Player>(playerRadius, sf::Color::Green);
-        player->SetPosition(width * 0.1f, (i + 1) * height / 6);
+        player->SetPosition(width * 0.12f, (i + 1) * height / 6);
 		player->SetTag(PLAYER_TEAM1);
         player->SetRigidBody(true);
 		player->RandomizeStats();
@@ -219,7 +212,7 @@ void RugbyScene::InitializeTeams()
     for (int i = 0; i < 5; ++i)
     {
         Player* player = CreateEntity<Player>(playerRadius, sf::Color::Red);
-        player->SetPosition(width * 0.9f, (i + 1) * height / 6);
+        player->SetPosition(width * 0.88f, (i + 1) * height / 6);
         player->SetTag(PLAYER_TEAM2);
         player->SetRigidBody(true);
 		player->RandomizeStats();
@@ -242,18 +235,18 @@ void RugbyScene::ResetPositions(int teamWin)
 
     for (int i = 0; i < mTeam1.size(); ++i)
     {
-        mTeam1[i]->SetPosition(width * 0.1f, (i + 1) * height / 6);
+        mTeam1[i]->SetPosition(width * 0.12f, (i + 1) * height / 6);
         mTeam1[i]->RandomizeStats();
     }
 
     for (int i = 0; i < mTeam2.size(); ++i)
     {
-        mTeam2[i]->SetPosition(width * 0.9f, (i + 1) * height / 6);
+        mTeam2[i]->SetPosition(width * 0.88f, (i + 1) * height / 6);
 		mTeam2[i]->RandomizeStats();
     }
 
-    // Positionnenement de la balle au centre
     mBall->SetOwner(GetRandomPlayerFromTeam(teamWin == PLAYER_TEAM1 ? PLAYER_TEAM2 : PLAYER_TEAM1));
+    mBall->SetIsMoving(false);
 }
 
 void RugbyScene::UpdateScore(int team)

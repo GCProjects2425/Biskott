@@ -332,7 +332,7 @@ void Player::Dodge()
 
 void Player::MoveToPosition(float x, float y)
 {
-    GoToPosition(x, y, speed);
+    GoToPosition(x, y, mSpeed);
 }
 
 void Player::OnUpdate()
