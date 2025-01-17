@@ -41,5 +41,4 @@ void Ball::OnUpdate()
 		}
     }
     SetIsAlreadySwitched(false);
-    // Logique de déplacement ou de gestion de la balle
 }
