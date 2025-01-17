@@ -278,7 +278,7 @@ void RugbyScene::DrawField()
     // Fond bleu
     Debug::DrawRectangle(0, 0, width, height, sf::Color::Blue);
 
-    // Lignes blanches d�limitant les zones
+    // Lignes blanches delimitant les zones
     Debug::DrawLine(width * 0.1f, 0, width * 0.1f, height, sf::Color::White);
     Debug::DrawLine(width * 0.9f, 0, width * 0.9f, height, sf::Color::White);
 }
