@@ -48,8 +48,8 @@ public:
 
 	bool IsScoringATry() const;
 
-    bool OpponentIsNear();
-    bool OpponentIsNear(Player* player);
+    Player* OpponentIsNear();
+    Player* OpponentIsNear(Player* player);
 	Player* OpponentIsInTrajectory(Player* playerTarget);
 	Player* OpponentIsInTrajectory(Player* player, Player* playerTarget);
     Player* GetNearestPlayerToOpponentLine();
@@ -61,6 +61,10 @@ public:
 
     Player* GetNearestTeammate();
 	void GetSortedTeammatesByDistance(std::vector<Player*>& sortedTeammates);
+
+	const char* GetStateName(State state) const;
+
+	void Dodge();
 
     void MoveToPosition(float x, float y);
     void OnUpdate();

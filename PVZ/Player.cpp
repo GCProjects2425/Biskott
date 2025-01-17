@@ -136,15 +136,15 @@ void Player::OnInitialize()
 bool Player::IsScoringATry() const
 {
 	float distance = Utils::GetDistance(GetPosition().x, GetPosition().y, GetOpponentLinePosition().x, GetOpponentLinePosition().y);
-	return HasBall() && distance <= 0;
+	return HasBall() && distance <= 5;
 }
 
-bool Player::OpponentIsNear()
+Player* Player::OpponentIsNear()
 {
 	return OpponentIsNear(this);
 }
 
-bool Player::OpponentIsNear(Player* player)
+Player* Player::OpponentIsNear(Player* player)
 {
 	RugbyScene* pScene = GetScene<RugbyScene>();
 	std::vector<Player*> oppsTeamPlayers;
@@ -154,10 +154,10 @@ bool Player::OpponentIsNear(Player* player)
 		float distance = Utils::GetDistance(oppsPlayer->GetPosition().x, oppsPlayer->GetPosition().y, player->GetPosition().x, player->GetPosition().y);
 		if (distance <= 50.f)
 		{
-			return true;
+			return oppsPlayer;
 		}
 	}
-	return false;
+	return nullptr;
 }
 
 Player* Player::OpponentIsInTrajectory(Player* playerTarget)
@@ -318,6 +318,46 @@ void Player::GetSortedTeammatesByDistance(std::vector<Player*>& sortedTeammates)
 		});
 }
 
+const char* Player::GetStateName(State state) const
+{
+	switch (state)
+	{
+	case Idle: return "Idle";
+	case Attack: return "Attack";
+	case Defense: return "Defense";
+	case Support: return "Support";
+	case Passing: return "Passing";
+	default: return "Unknown";
+	}
+}
+
+void Player::Dodge()
+{
+	if (Player* nearestPlayer = OpponentIsNear())
+	{
+		sf::Vector2f targetDirection = GetPosition() - GetOpponentLinePosition();
+		float magnitude = std::sqrt(targetDirection.x * targetDirection.x + targetDirection.y * targetDirection.y);
+		if (magnitude > 0.f)
+		{
+			targetDirection /= magnitude;
+		}
+		sf::Vector2f dodgeDirection = GetPosition() - nearestPlayer->GetPosition();
+		magnitude = std::sqrt(dodgeDirection.x * dodgeDirection.x + dodgeDirection.y * dodgeDirection.y);
+		if (magnitude > 0.f)
+		{
+			dodgeDirection /= magnitude;
+		}
+		sf::Vector2f finalDirection = targetDirection + dodgeDirection * 0.5f;
+		float finalMagnitude = std::sqrt(finalDirection.x * finalDirection.x + finalDirection.y * finalDirection.y);
+		if (finalMagnitude > 0.f)
+		{
+			finalDirection /= finalMagnitude;
+		}
+		float dodgeSpeed = 150.f;
+		SetDirection(finalDirection.x, finalDirection.y, dodgeSpeed);
+	}
+}
+
 
 void Player::MoveToPosition(float x, float y)
 {
@@ -360,10 +400,8 @@ void Player::OnUpdate()
 		}
 	}
 
-	if (GetNearestPlayerToOpponentLine() == this)
-	{
-		Debug::DrawText(GetPosition().x, GetPosition().y, "top", sf::Color::Green);
-	}
+	const char* stateName = GetStateName((State)mpStateMachine->GetCurrentState());
+	Debug::DrawText(GetPosition().x - GetRadius(), GetPosition().y - GetRadius(), stateName, sf::Color::White);
 
 	CheckAreaOutOfBounds();
 	mpStateMachine->Update();

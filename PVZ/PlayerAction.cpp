@@ -15,7 +15,7 @@ void PlayerAction_Idle::OnStart(Player* pPlayer)
 void PlayerAction_Attack::OnStart(Player* pPlayer)
 {
 	pPlayer->AddTemporaryAttribute(TemporaryAttribute::Type::Invincibility, 2.f);
-	pPlayer->AddTemporaryAttribute(TemporaryAttribute::Type::IncreasedSpeed, 3.f);
+	pPlayer->AddTemporaryAttribute(TemporaryAttribute::Type::IncreasedSpeed, 2.f);
 	pPlayer->AddTemporaryAttribute(TemporaryAttribute::Type::PassRestriction, 2.f);
 }
 
@@ -32,6 +32,8 @@ void PlayerAction_Attack::OnUpdate(Player* pPlayer)
 
 	float speed = pPlayer->HasTemporaryAttribute(TemporaryAttribute::Type::IncreasedSpeed) ? PLAYER_SPEED * 1.5f : PLAYER_SPEED;
 	pPlayer->SetDirection(direction.x, 0, speed);
+
+	pPlayer->Dodge();
 }
 
 void PlayerAction_Defense::OnStart(Player* pPlayer)

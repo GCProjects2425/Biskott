@@ -12,17 +12,6 @@ bool PlayerCondition_OpponentHasBall::OnTest(Player* pPlayer)
 	return !pPlayer->IsTag(pScene->GetTeamWithBall());
 }
 
-/*bool PlantCondition_NoAmmo::OnTest(Plant* pPlant)
-{
-	return pPlant->mAmmo == 0;
-}
-
-bool PlantCondition_FullAmmo::OnTest(Plant* pPlant)
-{
-	return pPlant->mAmmo == pPlant->mMaxAmmo;
-}
-*/
-
 bool PlayerCondition_IsInDanger::OnTest(Player* pPlayer)
 {
 	return !pPlayer->HasTemporaryAttribute(TemporaryAttribute::Type::Invincibility) && pPlayer->OpponentIsNear();
