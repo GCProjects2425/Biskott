@@ -246,7 +246,7 @@ void RugbyScene::ResetPositions(int teamWin)
         mTeam2[i]->SetPosition(width * 0.9f, (i + 1) * height / 6);
     }
 
-    // Positionner la balle au centre
+    // Positionnenement de la balle au centre
     mBall->SetOwner(GetRandomPlayerFromTeam(teamWin == PLAYER_TEAM1 ? PLAYER_TEAM2 : PLAYER_TEAM1));
 }
 
@@ -261,7 +261,6 @@ void RugbyScene::UpdateScore(int team)
         mScoreTeam2++;
     }
 
-    // R�initialiser les positions apr�s la mise � jour du score
     ResetPositions(team);
 }
 
