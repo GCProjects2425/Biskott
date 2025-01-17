@@ -4,6 +4,7 @@
 
 #include "GameManager.h"
 #include "Ball.h"
+#include "Debug.h"
 #include "RugbyScene.h"
 #include "Utils.h"
 
@@ -15,7 +16,7 @@ void PlayerAction_Idle::OnStart(Player* pPlayer)
 void PlayerAction_Attack::OnStart(Player* pPlayer)
 {
 	pPlayer->AddTemporaryAttribute(TemporaryAttribute::Type::Invincibility, 2.f);
-	pPlayer->AddTemporaryAttribute(TemporaryAttribute::Type::IncreasedSpeed, 2.f);
+	pPlayer->AddTemporaryAttribute(TemporaryAttribute::Type::IncreasedSpeed, pPlayer->GetStats().sprintDuration);
 	pPlayer->AddTemporaryAttribute(TemporaryAttribute::Type::PassRestriction, 2.f);
 }
 
@@ -30,7 +31,7 @@ void PlayerAction_Attack::OnUpdate(Player* pPlayer)
 		direction /= magnitude;
 	}
 
-	float speed = pPlayer->HasTemporaryAttribute(TemporaryAttribute::Type::IncreasedSpeed) ? PLAYER_SPEED * 1.5f : PLAYER_SPEED;
+	float speed = (pPlayer->GetStats().speed * PLAYER_SPEED) * (pPlayer->HasTemporaryAttribute(TemporaryAttribute::Type::IncreasedSpeed) ? pPlayer->GetStats().sprintSpeed : 1.f);
 	pPlayer->SetDirection(direction.x, 0, speed);
 
 	pPlayer->Dodge();
@@ -53,7 +54,7 @@ void PlayerAction_Defense::OnUpdate(Player* pPlayer)
 		direction /= magnitude;
 	}
 
-	pPlayer->SetDirection(direction.x, direction.y, PLAYER_SPEED);
+	pPlayer->SetDirection(direction.x, direction.y, (pPlayer->GetStats().speed * PLAYER_SPEED));
 }
 
 void PlayerAction_Support::OnStart(Player* pPlayer)
@@ -74,13 +75,15 @@ void PlayerAction_Support::OnUpdate(Player* pPlayer)
 		direction /= magnitude;
 	}
 
+	float speed = pPlayer->GetStats().speed * PLAYER_SPEED;
+
 	if (pPlayer->IsOffside())
 	{
-		pPlayer->SetDirection(-direction.x, direction.y, PLAYER_SPEED);
+		pPlayer->SetDirection(-direction.x, direction.y, speed);
 	}
 	else
 	{
-		pPlayer->SetDirection(direction.x, direction.y, PLAYER_SPEED);
+		pPlayer->SetDirection(direction.x, direction.y, speed);
 	}
 }
 
@@ -92,6 +95,8 @@ void PlayerAction_Passing::OnStart(Player* pPlayer)
 	pPlayer->GetSortedTeammatesByDistance(sortedTeammates);
 
 	Player* playerTarget = nullptr;
+
+	sortedTeammates.resize(3);
 
 	for (std::vector<Player*>::iterator it = sortedTeammates.begin(); it != sortedTeammates.end();)
 	{
@@ -127,13 +132,17 @@ void PlayerAction_Passing::OnStart(Player* pPlayer)
 		playerTarget = sortedTeammates[0];
 	}
 
-	if (playerTarget == nullptr)
+	if(Player* oppsPlayer = pPlayer->OpponentIsInTrajectory(playerTarget))
 	{
-		playerTarget = pScene->GetRandomPlayerFromTeam(pPlayer->IsTag(RugbyScene::PLAYER_TEAM1) ? RugbyScene::PLAYER_TEAM1 : RugbyScene::PLAYER_TEAM2);
+		playerTarget = oppsPlayer;
 	}
 
-	pScene->GetBall()->SetOwner(playerTarget);
-	pScene->GetBall()->SetIsMoving(true);
+	if (playerTarget)
+	{
+		pScene->GetBall()->SetOwner(playerTarget);
+		pScene->GetBall()->SetIsMoving(true);
+	}
+
 }
 
 void PlayerAction_Passing::OnUpdate(Player* pPlayer)

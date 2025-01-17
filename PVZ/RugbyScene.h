@@ -20,7 +20,7 @@ private:
     AABB mAreas[3];
 
     Player* mSelectedPlayer = nullptr;
-
+    bool isPaused = false;
 public:
     enum Tag
     {
@@ -32,6 +32,8 @@ public:
     void OnInitialize() override;
     void OnEvent(const sf::Event& event) override;
     void OnUpdate() override;
+
+	bool IsPaused() const { return isPaused; }
 
 	void GetTeamPlayers(std::vector<Player*>& team, int teamIndex) const;
     const int GetTeamWithBall() const;

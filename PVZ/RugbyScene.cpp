@@ -108,6 +108,11 @@ void RugbyScene::OnEvent(const sf::Event& event)
         }
 	}
 
+	if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Space)
+	{
+        isPaused = !isPaused;
+	}
+
     if(event.type == sf::Event::MouseMoved)
     {
 		if (mSelectedPlayer)
@@ -164,10 +169,7 @@ const int RugbyScene::GetTeamWithBall() const
 
 Player* RugbyScene::GetRandomPlayerFromTeam(int teamIndex) const
 {
-	std::random_device rd;
-	std::mt19937 gen(rd());
-	std::uniform_int_distribution<> dis(0, 4);
-	int randomIndex = dis(gen);
+	int randomIndex = Utils::Random(0, 4);
 
 	if (teamIndex == PLAYER_TEAM1)
 	{
@@ -182,10 +184,10 @@ Player* RugbyScene::GetRandomPlayerFromTeam(int teamIndex) const
 
 int RugbyScene::CheckIfScoringATry() const
 {
-	Player* ballOwner = GetBall()->GetOwner();
-    if(ballOwner->IsScoringATry())
+    int teamIdx = GetBall()->IsScoringATry();
+    if(teamIdx >= 0)
 	{
-		return ballOwner->IsTag(PLAYER_TEAM1) ? PLAYER_TEAM1 : PLAYER_TEAM2;
+		return teamIdx;
 	}
     return -1;
 }
@@ -202,6 +204,7 @@ void RugbyScene::InitializeTeams()
         player->SetPosition(width * 0.1f, (i + 1) * height / 6);
 		player->SetTag(PLAYER_TEAM1);
         player->SetRigidBody(true);
+		player->RandomizeStats();
 
         if (i <= 1)
             player->SetArea(&mAreas[0]);
@@ -219,6 +222,7 @@ void RugbyScene::InitializeTeams()
         player->SetPosition(width * 0.9f, (i + 1) * height / 6);
         player->SetTag(PLAYER_TEAM2);
         player->SetRigidBody(true);
+		player->RandomizeStats();
 
         if (i <= 1)
             player->SetArea(&mAreas[0]);
@@ -239,11 +243,13 @@ void RugbyScene::ResetPositions(int teamWin)
     for (int i = 0; i < mTeam1.size(); ++i)
     {
         mTeam1[i]->SetPosition(width * 0.1f, (i + 1) * height / 6);
+        mTeam1[i]->RandomizeStats();
     }
 
     for (int i = 0; i < mTeam2.size(); ++i)
     {
         mTeam2[i]->SetPosition(width * 0.9f, (i + 1) * height / 6);
+		mTeam2[i]->RandomizeStats();
     }
 
     // Positionnenement de la balle au centre

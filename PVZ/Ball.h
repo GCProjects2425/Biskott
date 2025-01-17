@@ -14,9 +14,11 @@ public:
 	void SetIsAlreadySwitched(bool value) { isAlreadySwitched = value; }
 	bool GetIsAlreadySwitched() const { return isAlreadySwitched; }
 
+	int IsScoringATry() const;
     void OnUpdate(); 
 private:
 	Player* mOwner = nullptr;
+	Player* mLastOwner = nullptr;
 	bool mIsMoving = false;
 	bool isAlreadySwitched = false;
 };

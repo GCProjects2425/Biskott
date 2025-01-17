@@ -18,6 +18,14 @@ struct TemporaryAttribute
     float duration; // Temps restant en secondes
 };
 
+struct PlayerStats
+{
+    float speed;
+    float passPower;
+    float sprintDuration;
+    float sprintSpeed;
+};
+
 class Player : public Entity
 {
     StateMachine<Player>* mpStateMachine;
@@ -38,6 +46,7 @@ class Player : public Entity
 	AABB* mArea = nullptr;
 
     std::vector<TemporaryAttribute> mTemporaryAttributes;
+	PlayerStats mStats;
 public:
     void SetHasBall(bool value) { hasBall = value; }
     bool HasBall() const { return hasBall; }
@@ -46,7 +55,7 @@ public:
 
     void OnInitialize();
 
-	bool IsScoringATry() const;
+	const PlayerStats& GetStats() const { return mStats; }
 
     Player* OpponentIsNear();
     Player* OpponentIsNear(Player* player);
@@ -69,6 +78,8 @@ public:
     void MoveToPosition(float x, float y);
     void OnUpdate();
     void OnCollision(Entity* pCollidedWith);
+
+    void RandomizeStats();
 
     void AddTemporaryAttribute(TemporaryAttribute::Type type, float duration);
     void UpdateTemporaryAttributes(float deltaTime);

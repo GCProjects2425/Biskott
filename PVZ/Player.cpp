@@ -110,12 +110,6 @@ void Player::OnInitialize()
 	mpStateMachine->SetState(State::Idle);
 }
 
-bool Player::IsScoringATry() const
-{
-	float distance = Utils::GetDistance(GetPosition().x, GetPosition().y, GetOpponentLinePosition().x, GetOpponentLinePosition().y);
-	return HasBall() && distance <= 5;
-}
-
 Player* Player::OpponentIsNear()
 {
 	return OpponentIsNear(this);
@@ -223,7 +217,7 @@ bool Player::IsOffside()
 	}
 
 	float playerDistance = Utils::GetDistance(GetPosition().x, GetPosition().y, GetOpponentLinePosition().x, GetOpponentLinePosition().y);
-	float ballOwnerDistance = Utils::GetDistance(ballOwner->GetPosition().x, ballOwner->GetPosition().y, GetOpponentLinePosition().x, GetOpponentLinePosition().y);
+	float ballOwnerDistance = Utils::GetDistance(ballOwner->GetPosition().x, ballOwner->GetPosition().y, ballOwner->GetOpponentLinePosition().x, ballOwner->GetOpponentLinePosition().y);
 
 	return ballOwnerDistance > playerDistance;
 }
@@ -364,11 +358,9 @@ void Player::OnUpdate()
 			}
 		}
 
-		// Recupere le joueur le plus proche
 		Player* closestTeammate = GetNearestTeammate();
 		if (closestTeammate)
 		{
-			// Trace une ligne entre le joueur avec la balle et le plus proche
 			Debug::DrawLine(
 				GetPosition().x, GetPosition().y,
 				closestTeammate->GetPosition().x, closestTeammate->GetPosition().y,
@@ -381,6 +373,10 @@ void Player::OnUpdate()
 	Debug::DrawText(GetPosition().x - GetRadius(), GetPosition().y - GetRadius(), stateName, sf::Color::White);
 
 	CheckAreaOutOfBounds();
+
+	if(pScene->IsPaused())
+		mpStateMachine->SetState(State::Idle);
+
 	mpStateMachine->Update();
 }
 
@@ -403,6 +399,14 @@ void Player::OnCollision(Entity* pCollidedWith)
 	}
 }
 
+void Player::RandomizeStats()
+{
+	mStats.speed = Utils::Random(0.8f, 1.2f);
+	mStats.passPower = Utils::Random(0.7f, 1.3f);
+	mStats.sprintDuration = Utils::Random(1.5f, 2.5f);
+	mStats.sprintSpeed = Utils::Random(1.2f, 1.7f);
+}
+
 void Player::AddTemporaryAttribute(TemporaryAttribute::Type type, float duration)
 {
 	mTemporaryAttributes.push_back({type, duration});
@@ -415,7 +419,7 @@ void Player::UpdateTemporaryAttributes(float deltaTime)
 		it->duration -= deltaTime;
 		if (it->duration <= 0.f)
 		{
-			it = mTemporaryAttributes.erase(it); // Supprime l'attribut expiré
+			it = mTemporaryAttributes.erase(it);
 		}
 		else
 		{
