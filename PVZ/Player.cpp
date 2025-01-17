@@ -102,7 +102,7 @@ void Player::OnInitialize()
 		Action<Player>* pPassing = mpStateMachine->CreateAction<PlayerAction_Passing>(State::Passing);
 		//-> ATTACK
 		{
-			auto transition = pPassing->CreateTransition(State::Attack);
+			auto transition = pPassing->CreateTransition(State::Support);
 			transition->AddCondition<PlayerCondition_HasBall>(false);
 		}
 	}
@@ -358,12 +358,12 @@ void Player::OnUpdate()
 			}
 		}
 
-		Player* closestTeammate = GetNearestTeammate();
-		if (closestTeammate)
+		Player* nearestTeammate = GetNearestTeammate();
+		if (nearestTeammate)
 		{
 			Debug::DrawLine(
 				GetPosition().x, GetPosition().y,
-				closestTeammate->GetPosition().x, closestTeammate->GetPosition().y,
+				nearestTeammate->GetPosition().x, nearestTeammate->GetPosition().y,
 				sf::Color::Blue
 			);
 		}
