@@ -291,7 +291,7 @@ int RugbyScene::GetPlayerLane(const sf::Vector2f& position) const
         if (position.x >= aabb.xMin && position.x <= aabb.xMax &&
             position.y >= aabb.yMin && position.y <= aabb.yMax)
         {
-            return i; // Retourne l'index de la zone
+            return i;
         }
     }
     return -1;
