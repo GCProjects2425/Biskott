@@ -100,6 +100,7 @@ void Player::OnInitialize()
 	// PASSING
 	{
 		Action<Player>* pPassing = mpStateMachine->CreateAction<PlayerAction_Passing>(State::Passing);
+		//-> ATTACK
 		{
 			auto transition = pPassing->CreateTransition(State::Attack);
 			transition->AddCondition<PlayerCondition_HasBall>(false);
