@@ -106,30 +106,6 @@ void Player::OnInitialize()
 		}
 	}
 
-	//SHOOTING
-	/*{
-		Action<Plant>* pShooting = mpStateMachine->CreateAction<PlantAction_Shooting>(State::Shooting);
-
-		//-> IDLE
-		{
-			auto transition = pShooting->CreateTransition(State::Idle);
-
-			transition->AddCondition<PlantCondition_ZombieOnLane>(false);
-		}
-
-		//-> RELOADING
-		{
-			auto transition = pShooting->CreateTransition(State::Reloading);
-
-			transition->AddCondition<PlantCondition_NoAmmo>();
-		}
-	}
-
-	//RELOADING
-	{
-		Action<Plant>* pShooting = mpStateMachine->CreateAction<PlantAction_Reloading>(State::Reloading);
-	}*/
-
 	mpStateMachine->SetState(State::Idle);
 }
 
