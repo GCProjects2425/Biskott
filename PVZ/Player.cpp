@@ -387,11 +387,11 @@ void Player::OnUpdate()
 			}
 		}
 
-		// R�cup�rer le joueur le plus proche
+		// Recupere le joueur le plus proche
 		Player* closestTeammate = GetNearestTeammate();
 		if (closestTeammate)
 		{
-			// Tracer une ligne entre le joueur avec la balle et le plus proche
+			// Trace une ligne entre le joueur avec la balle et le plus proche
 			Debug::DrawLine(
 				GetPosition().x, GetPosition().y,
 				closestTeammate->GetPosition().x, closestTeammate->GetPosition().y,
